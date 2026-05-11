@@ -30,11 +30,6 @@ This workflow may require external APIs, credentials, accounts, or third-party s
 3. Click `Import from File`
 4. Select the workflow file
 
-
-## Workflow Preview
-
-Workflow screenshots inside the `images` folder.
-
 ## License
 
 MIT License
