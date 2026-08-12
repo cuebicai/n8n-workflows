@@ -1,0 +1,544 @@
+{
+  "name": "3D Anatomy Studio",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create the final image-generation prompt for this anatomy subject.\n\nAnatomy part:\n{{ $('Extract Anatomy Part').item.json.output.anatomy_part }}\n\nMaster Prompt:\n{{ $('Build Anatomy Master Prompt').item.json.json_master }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Anatomy Image Prompt Generator — System Prompt\n\n## Role\n\nYou are an Anatomy Image Prompt Generator.\n\nYour only job is to create one final image-generation prompt using the provided anatomical subject and the existing Master Prompt.\n\nDo not generate the image.\nDo not explain the anatomy.\nDo not create a new visual specification.\n\n## Inputs\n\nThe user message provides:\n\n- `anatomy_part`: The single validated anatomical organ, body part, or anatomical structure extracted from the user's message.\n- `json_master`: The existing Master Prompt containing the complete visual, anatomical, composition, lighting, background, rendering, and constraint requirements.\n\n## Core Instructions\n\n1. Use `anatomy_part` as the primary subject of the image.\n2. Use `json_master` as the single source of truth for how the image must look.\n3. Follow all applicable requirements defined in `json_master`.\n4. Convert the Master Prompt into one clear, cohesive image-generation prompt.\n5. Preserve the anatomical accuracy, visual style, composition, lighting, background, rendering quality, and constraints defined in the Master Prompt.\n6. Do not remove, weaken, contradict, or replace any requirement from the Master Prompt.\n7. Do not introduce a different visual style or presentation.\n8. Do not add unrelated subjects, objects, environments, or concepts.\n9. Do not reinterpret the requested anatomy.\n10. Preserve meaningful anatomical qualifiers in `anatomy_part`, such as left, right, upper, lower, anterior, or posterior.\n11. Do not invent anatomical structures or details that conflict with the Master Prompt.\n12. Do not add information simply to make the prompt longer.\n\n## Visual Consistency — Highest Priority\n\nThe Master Prompt defines the fixed visual identity of this workflow.\n\nEvery generated image must maintain the same:\n\n- 3D medical rendering style\n- visual style\n- background\n- background color and tone\n- lighting style\n- lighting intensity and direction\n- camera treatment\n- perspective\n- framing\n- subject presentation\n- level of realism\n- rendering quality\n- overall visual tone\n\nDo not create a new visual interpretation for each anatomy part.\n\nThe anatomy subject may change, but the established visual identity must remain consistent.\n\nFor example:\n\n- heart → same established visual identity\n- liver → same established visual identity\n- kidney → same established visual identity\n- brain → same established visual identity\n\nDo not change the background, lighting, tone, camera, composition, or rendering style simply because the anatomical subject changes.\n\nIf a requirement is already defined in the Master Prompt, preserve it rather than replacing it with a new interpretation.\n\n## Prompt Construction Rules\n\n- Explicitly preserve the Master Prompt's fixed visual identity in the final prompt, including its background, tone, lighting, camera treatment, composition, and rendering style.\n- Write one cohesive image-generation prompt, not a checklist or explanation.\n- Start with the requested anatomical subject and its anatomical accuracy.\n- Include the relevant requirements from the Master Prompt.\n- Preserve the Master Prompt's defined style, composition, lighting, background, rendering, and constraints.\n- Use precise visual descriptions rather than academic explanations.\n- Avoid unnecessary repetition.\n- Avoid filler words and generic marketing language.\n- Keep the prompt concise while retaining the detail necessary for accurate image generation.\n- Do not impose an arbitrary word count.\n- Do not omit important requirements simply to make the prompt shorter.\n- Do not repeat the entire Master Prompt word-for-word unless necessary.\n- The final prompt must read naturally as one professional image-generation instruction.\n\n## Restrictions\n\nDo not:\n\n- Explain your reasoning.\n- Explain the anatomy.\n- Ask questions.\n- Add headings to the generated prompt.\n- Add markdown.\n- Add comments.\n- Add multiple prompt variations.\n- Add unrelated creative concepts.\n- Override any Master Prompt requirement.\n- Create a new background.\n- Create a new lighting setup.\n- Create a new visual style.\n- Change the established tone or composition.\n\n## Output Rules — Strict\n\nReturn valid JSON only.\n\nThe JSON must contain exactly one key:\n\n`image_prompt`\n\nThe value must be one complete image-generation prompt suitable for direct submission to the image-generation model.\n\nDo not return:\n\n- Markdown code fences\n- Explanations\n- Headings\n- Additional keys\n- Comments\n- Multiple prompts\n- Text before or after the JSON\n\nBefore returning the output, silently verify:\n\n1. The JSON is valid.\n2. Only `image_prompt` exists.\n3. The requested `anatomy_part` is the primary subject.\n4. The Master Prompt's requirements are respected.\n5. The same established visual identity is preserved.\n6. The background and background tone are preserved.\n7. The lighting and overall tone are preserved.\n8. The camera, perspective, and composition are preserved.\n9. No important Master Prompt requirement was contradicted or removed.\n10. No unrelated subject or object was introduced.\n11. The prompt is concise and visually descriptive.\n12. The prompt is ready to be sent directly to the image-generation model.\n\n## Output Format\n\n{\"image_prompt\":\"...\"}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [448, -368],
+      "id": "c10b2af7-ac8a-440c-905b-07d0e98c7861",
+      "name": "Generate Image Prompt"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"image_prompt\": \"string\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [640, -192],
+      "id": "eea41990-8ba1-4876-87f0-43fc0554c672",
+      "name": "Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [-48, -192],
+      "id": "2728f8ba-2ae6-4389-8004-9b908faccc16",
+      "name": "OpenAI 4.1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Hla7BgMkioY1VGXB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [-624, -464],
+      "id": "93629096-c90a-491d-a6a4-584ae4c56c69",
+      "name": "Receive Request",
+      "webhookId": "0702ba3e-e6cc-49e7-ace7-156d800f7462",
+      "credentials": {
+        "telegramApi": {
+          "id": "rgzS2XR7FI5TDdla",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=You are the input validator for a human anatomy image-generation workflow.\n\nDetermine whether the user's message clearly requests exactly ONE human anatomical organ, body part, or anatomical structure that can be illustrated.\n\nClassify the message into exactly one category:\n\nanatomy\nUse this when the message clearly refers to ONE human anatomical organ, body part, or anatomical structure.\nNatural wording is allowed.\n\nExamples:\n\"heart\"\n\"show me the heart\"\n\"human liver\"\n\"show me the right kidney\"\n\"brain anatomy\"\n\nnot_anatomy\nUse this when:\n- the message is unrelated to human anatomy\n- the message is too vague to identify one anatomical subject\n- the message is a greeting or general conversation\n- the message does not request an anatomical subject\n- the message contains TWO OR MORE anatomical subjects\n\nExamples:\n\"hello\"\n\"make an image\"\n\"show me anatomy\"\n\"heart and liver\"\n\"brain and lungs\"\n\nUser message:\n{{ $('Receive Request').item.json.message.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "not_anatomy",
+              "description": "Use when the message does not clearly request exactly one human anatomical organ, body part, or anatomical structure. This includes unrelated messages, greetings, vague requests, and messages containing multiple anatomical subjects."
+            },
+            {
+              "category": "anatomy",
+              "description": "Use when the message clearly requests exactly one human anatomical organ, body part, or anatomical structure that can be illustrated. Natural wording is allowed, such as \"show me the heart\" or \"human liver\"."
+            }
+          ]
+        },
+        "options": {
+          "enableAutoFixing": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [-400, -464],
+      "id": "d15c4ad7-8342-4f9e-bd52-535483c94d7d",
+      "name": "Validate Anatomy Request"
+    },
+    {
+      "parameters": {
+        "chatId": "=866720381",
+        "text": "=Please enter one organ or anatomical body part name, such as “heart”, “liver”, or “kidney”.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [-32, -544],
+      "id": "262e461c-48b6-4aee-882c-2715684e5be9",
+      "name": "Invalid Anatomy",
+      "webhookId": "5258b81e-7b96-4ab5-ad6e-b38b26c4abdd",
+      "credentials": {
+        "telegramApi": {
+          "id": "rgzS2XR7FI5TDdla",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.message.text }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "anatomy_part",
+              "description": "Extract the single human anatomical organ, body part, or anatomical structure requested by the user.\n\nReturn only the anatomical name, without explanations, sentences, punctuation, or additional text.\n\nPreserve meaningful anatomical qualifiers such as left, right, upper, lower, anterior, or posterior when they are part of the request."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [-48, -368],
+      "id": "d11c3297-75b3-419c-9e4c-fe2f3089f6af",
+      "name": "Extract Anatomy Part"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cc2e0500-57b1-4615-82cb-1c950e5f2ec4",
+              "name": "json_master",
+              "type": "string",
+              "value": "={\n  \"subject\": {\n    \"anatomy_part\": \"{{ $json.output.anatomy_part }}\",\n    \"type\": \"Human anatomical organ or body structure\",\n    \"presentation\": \"Isolated anatomical specimen presented as a detailed medical anatomy illustration.\",\n    \"anatomical_accuracy\": \"Maintain scientifically accurate human anatomy, proportions, orientation, major structures, vessels, and visible anatomical relationships appropriate to the requested subject.\"\n  },\n\n  \"visual_style\": {\n    \"style\": \"Highly detailed realistic 3D medical anatomy illustration.\",\n    \"appearance\": \"Clean, polished, educational anatomical visualization with realistic organic materials, subtle surface texture, natural tissue appearance, and carefully modeled anatomical structures.\",\n    \"depth\": \"Three-dimensional depth with realistic volume, contours, surfaces, and anatomical layering.\",\n    \"detail\": \"High anatomical detail without becoming visually cluttered.\",\n    \"rendering\": \"High-quality 3D medical visualization with realistic but clean educational presentation.\"\n  },\n\n  \"anatomical_content\": {\n    \"accuracy\": \"The requested anatomy must be anatomically correct and recognizable.\",\n    \"structures\": \"Show the important visible anatomical structures, vessels, openings, lobes, chambers, ducts, or other relevant features that naturally belong to the requested anatomy.\",\n    \"proportions\": \"Maintain realistic anatomical proportions and relationships.\",\n    \"orientation\": \"Use the standard anatomical orientation appropriate for the requested structure.\",\n    \"integrity\": \"Do not invent, remove, merge, or incorrectly reposition anatomical structures.\"\n  },\n\n  \"composition\": {\n    \"background\": \"Clean seamless warm ivory/cream background matching approximately #F5F1E6.\"\n    \"subject_position\": \"Place the complete anatomical subject centrally in the frame.\",\n    \"subject_size\": \"Large enough to clearly inspect the anatomy while maintaining comfortable empty space around it.\",\n    \"framing\": \"Show the entire requested anatomical structure without unwanted cropping.\",\n    \"orientation\": \"Present the anatomy in the most informative standard view unless the requested anatomy requires another orientation.\",\n    \"isolation\": \"The anatomical subject must remain visually isolated from the background.\"\n  },\n\n  \"camera\": {\n    \"type\": \"Fixed professional medical visualization camera.\",\n    \"angle\": \"Clear three-quarter or standard anatomical viewing angle that provides the best overall understanding of the structure.\",\n    \"perspective\": \"Natural perspective with no extreme wide-angle distortion.\",\n    \"focus\": \"Keep the entire anatomical subject sharply focused.\",\n    \"movement\": \"No camera movement.\"\n  },\n\n  \"lighting\": {\n    \"type\": \"Soft professional studio lighting.\",\n    \"setup\": \"Use balanced diffuse lighting with subtle highlights and shadows to reveal three-dimensional anatomical form.\",\n    \"shadows\": \"Soft natural shadows that provide depth without obscuring anatomical details.\",\n    \"consistency\": \"Maintain consistent neutral lighting throughout the image.\"\n  },\n\n\"background\": {\n  \"type\": \"Seamless warm ivory medical studio background.\",\n  \"color\": \"Warm creamy off-white, approximately #F5F1E6.\",\n  \"appearance\": \"Soft warm ivory/cream tone with a subtle natural tonal variation, matching the established reference appearance. Clean, minimal, polished, and distraction-free.\",\n  \"surface\": \"Smooth matte background with no visible texture, pattern, horizon line, or studio seam.\",\n  \"consistency\": \"Use the same warm ivory background tone and overall visual feeling for every anatomical subject. Do not shift toward pure white, cool white, gray, beige, or other background colors.\"\n}\n\n  \"presentation\": {\n    \"purpose\": \"Educational medical anatomy visualization.\",\n    \"look\": \"Professional anatomical textbook and medical visualization aesthetic.\",\n    \"labels\": \"Do not add labels, arrows, text, captions, annotations, or UI elements unless explicitly requested.\",\n    \"surroundings\": \"Show only the requested anatomical subject and the clean background.\"\n  },\n\n  \"rendering\": {\n    \"quality\": \"High-resolution, highly detailed 3D medical render.\",\n    \"materials\": \"Realistic biological tissue, vessels, membranes, and anatomical surfaces appropriate to the requested organ.\",\n    \"sharpness\": \"Crisp anatomical edges and clearly defined structures.\",\n    \"depth\": \"Realistic three-dimensional depth and subtle shading.\",\n    \"consistency\": \"Maintain the same visual language, lighting, background, camera treatment, and rendering quality for every anatomical subject.\"\n  },\n\n  \"constraints\": [\n    \"The requested anatomy must be the primary and only subject.\",\n    \"Maintain scientifically accurate anatomy.\",\n    \"Preserve realistic anatomical proportions.\",\n    \"Show the complete requested structure whenever possible.\",\n    \"Keep the subject centered and clearly visible.\",\n    \"Use a clean neutral background.\",\n    \"Use realistic 3D medical visualization.\",\n    \"Maintain consistent lighting and rendering.\",\n    \"Do not add unnecessary objects.\",\n    \"Do not add text or labels unless explicitly requested.\"\n  ],\n\n  \"negative_constraints\": [\n    \"No people.\",\n    \"No human body surrounding the organ unless required for anatomical context.\",\n    \"No mannequin.\",\n    \"No clothing.\",\n    \"No surgical instruments.\",\n    \"No hospital room.\",\n    \"No unnecessary objects.\",\n    \"No text.\",\n    \"No labels.\",\n    \"No arrows.\",\n    \"No captions.\",\n    \"No UI elements.\",\n    \"No watermark.\",\n    \"No cartoon style.\",\n    \"No flat 2D icon style.\",\n    \"No exaggerated fantasy anatomy.\",\n    \"No distorted anatomy.\",\n    \"No duplicated structures.\",\n    \"No malformed vessels.\",\n    \"No incorrect anatomical connections.\",\n    \"No excessive blood or gore.\"\n  ],\n\n  \"output\": {\n    \"format\": \"High-resolution portrait anatomical illustration.\",\n    \"composition\": \"Centered isolated anatomical subject.\",\n    \"quality\": \"HD or higher.\",\n    \"style_consistency\": \"Maintain the established 3D medical anatomy visual style.\"\n  },\n\n  \"keywords\": [\n    \"3D medical anatomy\",\n    \"realistic anatomical illustration\",\n    \"human anatomy\",\n    \"medical visualization\",\n    \"high anatomical accuracy\",\n    \"detailed organ rendering\",\n    \"realistic biological tissue\",\n    \"studio presentation\",\n    \"educational anatomy\"\n  ]\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "778501b8-14b2-4225-94cb-0c167d762382",
+      "name": "Build Anatomy Master Prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [272, -368],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bed396b7-b3ce-4cad-9b7c-0954593fb5cf",
+              "name": "image_prompt",
+              "value": "={{ $json.output.image_prompt }}",
+              "type": "string"
+            },
+            {
+              "id": "a99b838c-d225-4c3c-8f20-be50b5cc7804",
+              "name": "aspect_ratio",
+              "value": "1:1",
+              "type": "string"
+            },
+            {
+              "id": "523bd063-d0ca-479e-90f5-f62258fee8f4",
+              "name": "resolution",
+              "value": "1K",
+              "type": "string"
+            },
+            {
+              "id": "41ec9519-2bdc-4d8f-9541-551008487a5b",
+              "name": "output_format",
+              "value": "png",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-624, -32],
+      "id": "d68f03f4-524a-490c-8489-a04a98e8628f",
+      "name": "Prepare Image Request"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/api/v1/jobs/createTask",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n   \"model\": \"nano-banana-2\",\n   \"input\": {\n      \"prompt\": {{ JSON.stringify($json.image_prompt) }},\n      \"image_input\": [],\n      \"aspect_ratio\": \"{{ $json.aspect_ratio }}\",\n      \"resolution\": \"{{ $json.resolution }}\",\n      \"output_format\": \"{{ $json.output_format }}\"\n   }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [-416, -32],
+      "id": "6547a096-1e16-49c0-8537-94e6cd4c331a",
+      "name": "Generate Nano Banana 2",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Dis9Sy8Tisy7O2MY",
+          "name": "KIE Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [-192, -32],
+      "id": "cc2fd78b-616e-4a19-96ca-2aa2b789b844",
+      "name": "Wait 30 Seconds",
+      "webhookId": "c3899f95-1f2b-4aa5-8468-8da107f656fc"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={{ $json.data.taskId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [48, -32],
+      "id": "1572100d-2cad-47d5-9149-e6aea798cb27",
+      "name": "Get Generated Image",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Dis9Sy8Tisy7O2MY",
+          "name": "KIE Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.state }}",
+                    "rightValue": "success",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "5f4be3bc-4340-4e85-970e-ddc3a6362865"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "success"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dd1b66d0-71f9-446e-809d-10508cbf03ce",
+                    "leftValue": "={{ $json.data.state }}",
+                    "rightValue": "waiting",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "generating"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d22eb7fa-7804-4476-97de-7cc79ec9d37d",
+                    "leftValue": "={{ $json.data.state }}",
+                    "rightValue": "fail",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "fail"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [288, -48],
+      "id": "d2fc76ee-7fef-4db2-ae39-907d0ced8f22",
+      "name": "Check Generation Status"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "866720381",
+        "file": "={{ JSON.parse($json.data.resultJson).resultUrls[0] }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [592, -64],
+      "id": "1f44d416-59e1-4a84-a2b2-bd4165c0f6a2",
+      "name": "Send Image",
+      "webhookId": "756d8027-5cbf-4f48-ba0b-cadf463d1e89",
+      "alwaysOutputData": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "rgzS2XR7FI5TDdla",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Generate Image Prompt": {
+      "main": [
+        [
+          {
+            "node": "Prepare Image Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Image Prompt",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI 4.1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Validate Anatomy Request",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Extract Anatomy Part",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Generate Image Prompt",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Receive Request": {
+      "main": [
+        [
+          {
+            "node": "Validate Anatomy Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Anatomy Request": {
+      "main": [
+        [
+          {
+            "node": "Invalid Anatomy",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract Anatomy Part",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Anatomy Part": {
+      "main": [
+        [
+          {
+            "node": "Build Anatomy Master Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Anatomy Master Prompt": {
+      "main": [
+        [
+          {
+            "node": "Generate Image Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Image Request": {
+      "main": [
+        [
+          {
+            "node": "Generate Nano Banana 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Nano Banana 2": {
+      "main": [
+        [
+          {
+            "node": "Wait 30 Seconds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 30 Seconds": {
+      "main": [
+        [
+          {
+            "node": "Get Generated Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Generated Image": {
+      "main": [
+        [
+          {
+            "node": "Check Generation Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Generation Status": {
+      "main": [
+        [
+          {
+            "node": "Send Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait 30 Seconds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "884b8b75-26b6-4f60-a084-370ed1e38d71",
+  "meta": {
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "IRkP21wASrirJ4sk",
+  "tags": []
+}
