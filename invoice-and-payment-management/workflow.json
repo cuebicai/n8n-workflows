@@ -1,0 +1,2466 @@
+{
+  "name": "Invoice & Payment Management",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"INVALID_REQUEST\",\n  \"message\": \"Missing required event fields\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        272,
+        -304
+      ],
+      "id": "a588dc61-e6e9-47c7-b07c-5cef9881d3b7",
+      "name": "Reject Invalid Request"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "invoice.created",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "49ce99b7-94f3-4cf5-afc7-cd9758473efa"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Invoice Created"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0cf2ebf2-caab-43e4-92a7-1188e15fc472",
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "payment.received",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Payment Received"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "95bb9507-fa8b-468a-a8cf-6c55686df7a9",
+                    "leftValue": "={{ $json.body.event_type }}",
+                    "rightValue": "refund.completed",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Refund Completed"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Unsupported Event"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        496,
+        -528
+      ],
+      "id": "b63c7a59-83f8-404b-9b26-5b4b2a5a4570",
+      "name": "Route Event"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"UNSUPPORTED_EVENT\",\n  \"message\": \"Unsupported event type\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        496,
+        -304
+      ],
+      "id": "ab001512-ed4e-4bd9-9488-945bb5743b92",
+      "name": "Reject Invalid Event"
+    },
+    {
+      "parameters": {
+        "fromEmail": "=Cuebic AI <billing@cuebicai.com>",
+        "toEmail": "={{ $('Receive Invoice Request').item.json.body.customer.email }}",
+        "subject": "=Invoice {{ $('Receive Invoice Request').item.json.body.invoice_number }} from Northstar Solutions",
+        "emailFormat": "text",
+        "text": "=Hi {{ $('Receive Invoice Request').item.json.body.customer.name }},\n\nPlease find your invoice attached.\n\nInvoice: {{ $('Receive Invoice Request').item.json.body.invoice_number }}\nTotal: {{ $('Receive Invoice Request').item.json.body.currency }} {{ $('Receive Invoice Request').item.json.body.total }}\n\nThank you for your business.\n\nRegards,\nNorthstar Solutions",
+        "options": {
+          "appendAttribution": false,
+          "fileAttachments": "data"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1680,
+        -800
+      ],
+      "id": "3b702a75-86a7-445f-8fe2-fd4a47bc9ba5",
+      "name": "Send Invoice Email",
+      "webhookId": "b0f32edd-1455-47e7-82ea-c13321505828",
+      "credentials": {
+        "smtp": {
+          "id": "GNV5snHBLJSxPqZx",
+          "name": "SMTP Resend account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{\n  {\n    success: true,\n    invoice_id: $json.invoice_id,\n    status: $json.status,\n    pdf_url: $json.pdf_file,\n    message: \"Invoice generated and sent successfully\"\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2336,
+        -944
+      ],
+      "id": "5ba3b574-f48a-46ac-86d1-23045809b5dc",
+      "name": "Return Invoice Response"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "invoice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "invoice_id": "={{ $json.body.invoice_id }}",
+            "invoice_number": "={{ $json.body.invoice_number }}",
+            "customer_name": "={{ $json.body.customer.name }}",
+            "customer_email": "={{ $json.body.customer.email }}",
+            "customer_address": "={{ $json.body.customer.address }}",
+            "currency": "={{ $json.body.currency }}",
+            "subtotal": "={{ $json.body.subtotal }}",
+            "tax_amount": "={{ $json.body.tax }}",
+            "total": "={{ $json.body.total }}",
+            "invoice_date": "={{ $json.body.invoice_date }}",
+            "created_at": "={{ $now }}",
+            "updated_at": "={{ $now }}",
+            "status": "processing"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "invoice_id",
+              "displayName": "invoice_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "invoice_number",
+              "displayName": "invoice_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "invoice_date",
+              "displayName": "invoice_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_email",
+              "displayName": "customer_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_address",
+              "displayName": "customer_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subtotal",
+              "displayName": "subtotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "tax_amount",
+              "displayName": "tax_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_paid",
+              "displayName": "total_paid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "refunded_amount",
+              "displayName": "refunded_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "amount_due",
+              "displayName": "amount_due",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pdf_file",
+              "displayName": "pdf_file",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_sent_at",
+              "displayName": "email_sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1232,
+        -960
+      ],
+      "id": "cd566e4e-8689-4eea-98b1-11a2dfe9708c",
+      "name": "Store Invoice",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "invoice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "pdf_file": "={{ $('Upload Invoice PDF').item.json.webViewLink }}",
+            "invoice_id": "={{ $('Receive Invoice Request').item.json.body.invoice_id }}",
+            "status": "sent",
+            "email_sent_at": "={{ $now }}",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "invoice_id"
+          ],
+          "schema": [
+            {
+              "id": "invoice_id",
+              "displayName": "invoice_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "invoice_number",
+              "displayName": "invoice_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "invoice_date",
+              "displayName": "invoice_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "customer_email",
+              "displayName": "customer_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "customer_address",
+              "displayName": "customer_address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "subtotal",
+              "displayName": "subtotal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "tax_amount",
+              "displayName": "tax_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total",
+              "displayName": "total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total_paid",
+              "displayName": "total_paid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "refunded_amount",
+              "displayName": "refunded_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "amount_due",
+              "displayName": "amount_due",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "pdf_file",
+              "displayName": "pdf_file",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email_sent_at",
+              "displayName": "email_sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2128,
+        -944
+      ],
+      "id": "213cd902-b336-4708-ba1f-90e7d1e7ea04",
+      "name": "Update Invoice Status",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "=invoice_{{ $('Receive Invoice Request').item.json.body.invoice_number }}.pdf",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1mlhhntQhrMn_04AioMo61MMfSxXhFzmz",
+          "mode": "list",
+          "cachedResultName": "invoice_pdf",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1mlhhntQhrMn_04AioMo61MMfSxXhFzmz"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1680,
+        -960
+      ],
+      "id": "6b4d33d7-16c8-4b16-97ff-64a6ffa79135",
+      "name": "Upload Invoice PDF",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "kUKKpznZQIk5Sb9S",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1904,
+        -944
+      ],
+      "id": "f5d17d01-b833-41a1-bf3d-ba8d398ab154",
+      "name": "Merge Invoice Results"
+    },
+    {
+      "parameters": {
+        "operation": "invoice",
+        "companyEmail": "billing@cuebicai.com",
+        "clientName": "={{ $('Receive Invoice Request').item.json.body.customer.name }}",
+        "clientAddress": "={{ $('Receive Invoice Request').item.json.body.customer.address }}",
+        "clientEmail": "={{ $('Receive Invoice Request').item.json.body.customer.email }}",
+        "invoiceNumber": "={{ $('Receive Invoice Request').item.json.body.invoice_number }}",
+        "currency": "={{ $('Receive Invoice Request').item.json.body.currency }} ",
+        "quickItems": "={{ $('Receive Invoice Request').item.json.body.items.map((item, index) => `${index + 1}. ${item.name} (${item.quantity}) (${item.unit_price} ${$('Receive Invoice Request').item.json.body.currency})`).join('\\n') }}",
+        "lineItems": {
+          "items": []
+        },
+        "taxRate": "={{ $('Receive Invoice Request').item.json.body.tax_percentage }}"
+      },
+      "type": "n8n-nodes-pdfbro.pdfBro",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        -960
+      ],
+      "id": "b5c379a8-5944-47c9-adf1-f367ae438f5e",
+      "name": "PdfBro"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "invoice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "invoice_id",
+              "lookupValue": "={{ $json.body.invoice_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        784,
+        -944
+      ],
+      "id": "6ade3902-efe2-4976-99e8-331dd0fd25ef",
+      "name": "Check Existing Invoice",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"INVOICE_ALREADY_EXISTS\",\n  \"message\": \"This invoice has already been processed or exists.\"\n}",
+        "options": {
+          "responseCode": 409
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1008,
+        -784
+      ],
+      "id": "7663728f-d249-4291-8e4c-16be77480c7e",
+      "name": "Invoice Already Exists"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 411824127,
+          "mode": "list",
+          "cachedResultName": "payments",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=411824127"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "payment_id",
+              "lookupValue": "={{ $json.body.payment_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        784,
+        -512
+      ],
+      "id": "9dc3baae-6918-45ef-b2f7-393d09dc1d4e",
+      "name": "Check Existing Payment",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"PAYMENT_ALREADY_EXISTS\",\n  \"message\": \"This payment has already been processed or exists.\"\n}",
+        "options": {
+          "responseCode": 409
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1008,
+        -352
+      ],
+      "id": "096f3ad4-4bb3-4592-a215-bb07b0ad506a",
+      "name": "Payment Already Processed"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 411824127,
+          "mode": "list",
+          "cachedResultName": "payments",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=411824127"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "payment_id": "={{ $('Invoice Events').item.json.body.payment_id }}",
+            "invoice_id": "={{ $('Invoice Events').item.json.body.invoice_id }}",
+            "invoice_number": "={{ $('Invoice Events').item.json.body.invoice_number }}",
+            "payment_date": "={{ $('Invoice Events').item.json.body.payment_date }}",
+            "amount": "={{ $('Invoice Events').item.json.body.amount }}",
+            "currency": "={{ $('Invoice Events').item.json.body.currency }}",
+            "payment_method": "={{ $('Invoice Events').item.json.body.payment_method }}",
+            "transaction_id": "={{ $('Invoice Events').item.json.body.transaction_id }}",
+            "status": "processing",
+            "created_at": "={{ $now }}",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "payment_id",
+              "displayName": "payment_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "invoice_id",
+              "displayName": "invoice_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "invoice_number",
+              "displayName": "invoice_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "payment_date",
+              "displayName": "payment_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "payment_method",
+              "displayName": "payment_method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "transaction_id",
+              "displayName": "transaction_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "receipt_sent",
+              "displayName": "receipt_sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_sent_at",
+              "displayName": "email_sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1232,
+        -528
+      ],
+      "id": "9ccea164-b743-4fc0-afdc-70cb0844d103",
+      "name": "Store Payment",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "invoice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "invoice_number",
+              "lookupValue": "={{ $('Invoice Events').item.json.body.invoice_number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1440,
+        -528
+      ],
+      "id": "d8b566c1-a40e-4b35-b6c0-e7fd7297c408",
+      "name": "Get Invoice",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6fbc9372-d89a-470a-9e92-8ca42558552a",
+              "leftValue": "={{ $json.amount_due }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1648,
+        -528
+      ],
+      "id": "46e83d0d-0871-456a-b1d3-2da0907a8548",
+      "name": "Payment Fully Paid?"
+    },
+    {
+      "parameters": {
+        "fromEmail": "=Cuebic AI <billing@cuebicai.com>",
+        "toEmail": "={{ $json.customer_email }}",
+        "subject": "=Payment Received for Invoice {{ $json.invoice_number }}",
+        "emailFormat": "text",
+        "text": "=Hi {{ $json.customer_name }},\n\nThank you for your payment of {{ $json.currency }} {{ $('Store Payment').item.json.amount }} toward invoice {{ $json.invoice_number }}.\n\nYour payment has been successfully received and applied to invoice {{ $json.invoice_number }}. The total invoice amount is {{ $json.currency }} {{ $json.total }}, with {{ $json.currency }} {{ $json.total_paid }} paid to date. The remaining balance is {{ $json.currency }} {{ $json.amount_due }}.\n\n\nWe appreciate your prompt payment and look forward to continuing to work with you.\n\nBest regards,\nCuebic AI",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1904,
+        -352
+      ],
+      "id": "76ae5af8-3667-414a-9dca-eec008c8cb2c",
+      "name": "Send Payment Receipt",
+      "webhookId": "b0f32edd-1455-47e7-82ea-c13321505828",
+      "credentials": {
+        "smtp": {
+          "id": "GNV5snHBLJSxPqZx",
+          "name": "SMTP Resend account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "=Cuebic AI <billing@cuebicai.com>",
+        "toEmail": "={{ $json.customer_email }}",
+        "subject": "=Payment Received – Invoice {{ $json.invoice_number }} Paid in Full",
+        "emailFormat": "text",
+        "text": "=Hi {{ $json.customer_name }},\n\nThank you for your payment of {{ $('Store Payment').item.json.currency }} {{ $('Store Payment').item.json.amount }} toward invoice {{ $json.invoice_number }}.\n\nWe’re pleased to confirm that your payment has been received and that invoice {{ $json.invoice_number }} has now been paid in full. No further payment is required for this invoice.\n\nThank you for your business. We appreciate the opportunity to work with you.\n\nBest regards,\nCuebic AI",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1904,
+        -544
+      ],
+      "id": "c98b2886-7968-43d8-be73-38394ff7e1f2",
+      "name": "Send Final Payment Email",
+      "webhookId": "b0f32edd-1455-47e7-82ea-c13321505828",
+      "credentials": {
+        "smtp": {
+          "id": "GNV5snHBLJSxPqZx",
+          "name": "SMTP Resend account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 411824127,
+          "mode": "list",
+          "cachedResultName": "payments",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=411824127"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "sent",
+            "email_sent_at": "={{ $now }}",
+            "updated_at": "={{ $now }}",
+            "receipt_sent": "true",
+            "payment_id": "={{ $('Invoice Events').item.json.body.payment_id }}"
+          },
+          "matchingColumns": [
+            "payment_id"
+          ],
+          "schema": [
+            {
+              "id": "payment_id",
+              "displayName": "payment_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "invoice_id",
+              "displayName": "invoice_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "invoice_number",
+              "displayName": "invoice_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "payment_date",
+              "displayName": "payment_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "payment_method",
+              "displayName": "payment_method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "transaction_id",
+              "displayName": "transaction_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "receipt_sent",
+              "displayName": "receipt_sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email_sent_at",
+              "displayName": "email_sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2128,
+        -544
+      ],
+      "id": "66d58250-c74f-4172-b296-2133734fb2ec",
+      "name": "Update Payment Status",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{\n{\n  success: true,\n  payment_id: $json.payment_id,\n  invoice_id: $json.invoice_id,\n  status: $json.status,\n  receipt_sent: true,\n  message: \"Payment received and receipt sent successfully\"\n}\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2336,
+        -544
+      ],
+      "id": "0d8aa925-bae5-4045-bbd6-0ab6da06ce14",
+      "name": "Return Payment Response"
+    },
+    {
+      "parameters": {
+        "content": "## Event Validation & Routing\nValidates incoming webhook requests, rejects invalid or unsupported events, and routes valid events to the appropriate invoice, payment, or refund flow.",
+        "height": 1312,
+        "width": 528,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        192,
+        -1056
+      ],
+      "typeVersion": 1,
+      "id": "490eeb6c-7cf2-45b7-ab58-0bbc123681bb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Refund Processing & Confirmation\nValidates refund events, prevents duplicate refunds, records refund transactions, updates the invoice financial status, and sends a refund confirmation.",
+        "height": 432,
+        "width": 1552,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        736,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "1f3abb80-af10-4ca7-8597-78a0a2c3a1c4",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Payment Processing & Confirmation\nValidates payment events, prevents duplicate payments, records transactions, updates the invoice balance, and sends the appropriate payment confirmation or final paid notification.",
+        "height": 432,
+        "width": 1808,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        736,
+        -624
+      ],
+      "typeVersion": 1,
+      "id": "90fe63dd-148c-4b72-8eaf-b525ee43dba6",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Invoice Creation & Delivery\nValidates new invoice events, prevents duplicate invoices, stores invoice data, generates the PDF, sends it to the client, and returns the processing response.",
+        "height": 416,
+        "width": 1808,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        736,
+        -1056
+      ],
+      "typeVersion": 1,
+      "id": "4c070e54-dd4b-4885-b8af-0f764e2ca118",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 391835213,
+          "mode": "list",
+          "cachedResultName": "refunds",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=391835213"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "refund_id",
+              "lookupValue": "={{ $json.body.refund_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        784,
+        -64
+      ],
+      "id": "e238c95b-8aeb-4bd1-807f-3c4eb6089fe5",
+      "name": "Check Existing Refund",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f5331a79-e41e-434d-af82-7d67d17e7f78",
+              "leftValue": "={{ $json.invoice_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1008,
+        -64
+      ],
+      "id": "0b875cf9-ff29-4932-9459-d9e4bef5fb0f",
+      "name": "Refund Not Exists?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f5331a79-e41e-434d-af82-7d67d17e7f78",
+              "leftValue": "={{ $json.invoice_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1008,
+        -512
+      ],
+      "id": "f6fc3dbf-1947-4a2f-bddb-38a5aaa716fc",
+      "name": "Payment Not Exists?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f5331a79-e41e-434d-af82-7d67d17e7f78",
+              "leftValue": "={{ $json.invoice_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1008,
+        -944
+      ],
+      "id": "9ce7da70-41d3-4c7c-ba80-33abf262bf76",
+      "name": "Invoice Not Exists?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"INVOICE_ALREADY_EXISTS\",\n  \"message\": \"This invoice has already been processed or exists.\"\n}",
+        "options": {
+          "responseCode": 409
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1008,
+        96
+      ],
+      "id": "30d9308b-a714-44f5-b288-f3a47865fe8a",
+      "name": "Refund Already Processed"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 391835213,
+          "mode": "list",
+          "cachedResultName": "refunds",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=391835213"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "refund_id": "={{ $('Invoice Events').item.json.body.refund_id }}",
+            "invoice_id": "={{ $('Invoice Events').item.json.body.invoice_id }}",
+            "invoice_number": "={{ $('Invoice Events').item.json.body.invoice_number }}",
+            "refund_date": "={{ $('Invoice Events').item.json.body.refund_date }}",
+            "amount": "={{ $('Invoice Events').item.json.body.amount }}",
+            "currency": "={{ $('Invoice Events').item.json.body.currency }}",
+            "refund_method": "={{ $('Invoice Events').item.json.body.refund_method }}",
+            "transaction_id": "={{ $('Invoice Events').item.json.body.transaction_id }}",
+            "status": "processing",
+            "created_at": "={{ $now }}",
+            "updated_at": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "refund_id",
+              "displayName": "refund_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "invoice_id",
+              "displayName": "invoice_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "invoice_number",
+              "displayName": "invoice_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "refund_date",
+              "displayName": "refund_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "refund_method",
+              "displayName": "refund_method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "transaction_id",
+              "displayName": "transaction_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_sent",
+              "displayName": "email_sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_sent_at",
+              "displayName": "email_sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1232,
+        -80
+      ],
+      "id": "bc10bbea-ee32-4207-9c8f-712846d2256d",
+      "name": "Store Refund",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "invoice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "invoice_number",
+              "lookupValue": "={{ $('Invoice Events').item.json.body.invoice_number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1424,
+        -80
+      ],
+      "id": "d579b935-657d-49ea-96bb-56cd4c051c5e",
+      "name": "Get Invoice1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "=Cuebic AI <billing@cuebicai.com>",
+        "toEmail": "={{ $json.customer_email }}",
+        "subject": "=Refund Processed for Invoice {{ $json.invoice_number }}",
+        "emailFormat": "text",
+        "text": "=Hi {{ $json.customer_name }},\n\nWe’re writing to confirm that your refund of {{ $json.currency }} {{ $('Store Refund').item.json.amount }} for invoice {{ $json.invoice_number }} has been successfully processed.\n\nThe refund has been issued using the original payment method. Please allow the standard processing time for the refunded amount to appear in your account.\n\nIf you have any questions regarding this refund, please feel free to contact us.\n\nBest regards,\nCuebic AI",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1616,
+        -80
+      ],
+      "id": "d31b3660-dcde-403c-9ff4-3ea1f03beaf9",
+      "name": "Send Refund Email",
+      "webhookId": "b0f32edd-1455-47e7-82ea-c13321505828",
+      "credentials": {
+        "smtp": {
+          "id": "GNV5snHBLJSxPqZx",
+          "name": "SMTP Resend account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo",
+          "mode": "list",
+          "cachedResultName": "Invoice Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 391835213,
+          "mode": "list",
+          "cachedResultName": "refunds",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kaaY_znkyWNzgusRviTqTWue65JKu4uDc2mgD5uQNyo/edit#gid=391835213"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "sent",
+            "email_sent_at": "={{ $now }}",
+            "updated_at": "={{ $now }}",
+            "refund_id": "={{ $('Invoice Events').item.json.body.refund_id }}"
+          },
+          "matchingColumns": [
+            "refund_id"
+          ],
+          "schema": [
+            {
+              "id": "refund_id",
+              "displayName": "refund_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "invoice_id",
+              "displayName": "invoice_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "invoice_number",
+              "displayName": "invoice_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "refund_date",
+              "displayName": "refund_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "amount",
+              "displayName": "amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "refund_method",
+              "displayName": "refund_method",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "transaction_id",
+              "displayName": "transaction_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email_sent_at",
+              "displayName": "email_sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1840,
+        -80
+      ],
+      "id": "da1619ad-0fcd-4ad6-ad8e-022e181c3397",
+      "name": "Update Refund Status",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{\n  {\n    success: true,\n    invoice_id: $json.invoice_id,\n    status: $json.status,\n    pdf_url: $json.pdf_file,\n    message: \"Invoice generated and sent successfully\"\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2080,
+        -80
+      ],
+      "id": "5b6f1c4a-99ae-43f0-9f94-3d59f17e9cc0",
+      "name": "Return Refund Response"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0cc4ff8d-88e1-4f13-83e5-d89404583604",
+              "leftValue": "={{ $json.body.event_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "39866666-bcc6-4891-b276-e42958456ebe",
+              "leftValue": "={{ $json.body.event_type }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        272,
+        -480
+      ],
+      "id": "6a284bbf-d42f-43ad-8dcb-14e6cc7eb293",
+      "name": "Validate Request"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "invoice-events",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        272,
+        -688
+      ],
+      "id": "5ecf9783-6df9-48b4-a853-9fb2df8b047a",
+      "name": "Invoice Events",
+      "webhookId": "33c8d9ff-bcec-45a1-9c43-b7145591b595",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "nsxWF1WLSaaVYWZA",
+          "name": "Invoice API Key"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Route Event": {
+      "main": [
+        [
+          {
+            "node": "Check Existing Invoice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Existing Payment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Existing Refund",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Invalid Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Invoice Email": {
+      "main": [
+        [
+          {
+            "node": "Merge Invoice Results",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Store Invoice": {
+      "main": [
+        [
+          {
+            "node": "PdfBro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Invoice Status": {
+      "main": [
+        [
+          {
+            "node": "Return Invoice Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Invoice PDF": {
+      "main": [
+        [
+          {
+            "node": "Merge Invoice Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Invoice Results": {
+      "main": [
+        [
+          {
+            "node": "Update Invoice Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PdfBro": {
+      "main": [
+        [
+          {
+            "node": "Upload Invoice PDF",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Invoice Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Invoice": {
+      "main": [
+        [
+          {
+            "node": "Invoice Not Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Payment": {
+      "main": [
+        [
+          {
+            "node": "Payment Not Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Payment": {
+      "main": [
+        [
+          {
+            "node": "Get Invoice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Invoice": {
+      "main": [
+        [
+          {
+            "node": "Payment Fully Paid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Payment Fully Paid?": {
+      "main": [
+        [
+          {
+            "node": "Send Final Payment Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Payment Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Payment Receipt": {
+      "main": [
+        [
+          {
+            "node": "Update Payment Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Final Payment Email": {
+      "main": [
+        [
+          {
+            "node": "Update Payment Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Payment Status": {
+      "main": [
+        [
+          {
+            "node": "Return Payment Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Refund": {
+      "main": [
+        [
+          {
+            "node": "Refund Not Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refund Not Exists?": {
+      "main": [
+        [
+          {
+            "node": "Store Refund",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Refund Already Processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Payment Not Exists?": {
+      "main": [
+        [
+          {
+            "node": "Store Payment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Payment Already Processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Invoice Not Exists?": {
+      "main": [
+        [
+          {
+            "node": "Store Invoice",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Invoice Already Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Refund": {
+      "main": [
+        [
+          {
+            "node": "Get Invoice1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Refund Email": {
+      "main": [
+        [
+          {
+            "node": "Update Refund Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Invoice1": {
+      "main": [
+        [
+          {
+            "node": "Send Refund Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Refund Status": {
+      "main": [
+        [
+          {
+            "node": "Return Refund Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Request": {
+      "main": [
+        [
+          {
+            "node": "Route Event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Invalid Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Invoice Events": {
+      "main": [
+        [
+          {
+            "node": "Validate Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "ea44705c-57e9-4db5-ba90-5054e8a9925f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "uQ3Z5E5z3o6yEABt",
+  "tags": []
+}
