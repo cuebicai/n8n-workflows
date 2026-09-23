@@ -1,0 +1,302 @@
+{
+  "name": "Instagram Comment-to-DM Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "messaging",
+        "node": "Node",
+        "graphApiVersion": "v26.0",
+        "recipientId": "={{ $json.from_user_id }}",
+        "messageText": "={{ $json.message }}"
+      },
+      "type": "@mookielianhd/n8n-nodes-instagram.instagram",
+      "typeVersion": 1,
+      "position": [
+        720,
+        -32
+      ],
+      "id": "5694b1e1-a099-4c1d-87c2-29458f2adb8b",
+      "name": "Send DM",
+      "credentials": {
+        "instagramApi": {
+          "id": "JmzM0kPAAkh3bXAN",
+          "name": "Instagram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "verifyToken": "2956604f-b6ec",
+        "eventsToInclude": [
+          "comments",
+          "messages"
+        ]
+      },
+      "type": "@mookielianhd/n8n-nodes-instagram.instagramTrigger",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        0
+      ],
+      "id": "7ee239da-6954-4de2-b388-62b3fe661719",
+      "name": "New Comment",
+      "webhookId": "f5aff73b-5425-4116-9036-35769225caaf"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d97a0ec6-51be-4327-a980-e774c6daf438",
+              "leftValue": "={{ $json.field }}",
+              "rightValue": "comments",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "259e5a99-d22e-45a7-a384-05fc7c043e21",
+      "name": "Is Comment?"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12zLW3C89tvD0Ielr3IDMchttYrUV-OgYi1YkMyN9BP0",
+          "mode": "list",
+          "cachedResultName": "IG Comment DM Automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12zLW3C89tvD0Ielr3IDMchttYrUV-OgYi1YkMyN9BP0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12zLW3C89tvD0Ielr3IDMchttYrUV-OgYi1YkMyN9BP0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "post_id/reel_id",
+              "lookupValue": "={{ $json.value.media.id }}"
+            },
+            {
+              "lookupColumn": "comment_keyword",
+              "lookupValue": "={{ $json.value.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        -16
+      ],
+      "id": "d792615f-bbd4-4753-aa2f-f30c020c0fa9",
+      "name": "Find DM",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1ZXJVIgQXrWTVKA7",
+          "name": "Google Sheets -  anarifnawaz4@gmail.com"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b12bf52d-a480-40ed-b4bd-13e0e98701cc",
+              "leftValue": true,
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        288,
+        -16
+      ],
+      "id": "e6f66afe-9ee2-43b5-a49a-7abdeda8147b",
+      "name": "DM Found?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0bc98e5-ded3-44cc-bccd-5a32d151cb9b",
+              "name": "from_user_name",
+              "value": "={{ $('New Comment').item.json.value.from.username }}",
+              "type": "string"
+            },
+            {
+              "id": "1e4e29ef-da73-416e-9cb6-cc0a26eda7c3",
+              "name": "from_user_id",
+              "value": "={{ $('New Comment').item.json.value.from.id }}",
+              "type": "string"
+            },
+            {
+              "id": "778bfa69-a6a1-41b9-bc6c-5716e0cd45f9",
+              "name": "message",
+              "value": "={{ $json.short_message }}\n{{ $json.link }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        512,
+        -32
+      ],
+      "id": "3f72bec0-b1f4-456a-95c2-a06ae0de5149",
+      "name": "Build DM"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        160
+      ],
+      "id": "226cdb2d-e3c2-4963-a730-5bc9d30e5942",
+      "name": "No Action"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        288,
+        144
+      ],
+      "id": "dd98eb99-3778-4113-b2df-60659c86d8b1",
+      "name": "No Match"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "New Comment": {
+      "main": [
+        [
+          {
+            "node": "Is Comment?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Comment?": {
+      "main": [
+        [
+          {
+            "node": "Find DM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find DM": {
+      "main": [
+        [
+          {
+            "node": "DM Found?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DM Found?": {
+      "main": [
+        [
+          {
+            "node": "Build DM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Match",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build DM": {
+      "main": [
+        [
+          {
+            "node": "Send DM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "4a69aeab-2c8f-4332-9c4c-46e8a445cd0c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "FAzF2rgm5ZPW0yOB",
+  "tags": []
+}
