@@ -1,0 +1,436 @@
+{
+  "name": "WhatsApp AI Memory Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1368855942958231",
+        "recipientPhoneNumber": "={{ $('User\\'s Message').item.json.recipient }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        432
+      ],
+      "id": "3b04738a-d40e-49ca-b227-75992c3b0e49",
+      "name": "Send message",
+      "webhookId": "6739f78c-cf8a-47fe-bf8d-936f745fc1c5",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "0gjgioqTAeaalGqc",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "id": "e97e13b3-b157-4a78-b72a-e4228706fac4",
+      "name": "User Message",
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "position": [
+        -1664,
+        416
+      ],
+      "webhookId": "aaa71f03-f7af-4d18-8d9a-0afb86f1b554",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "QaVP7lZmgOIfdRwx",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "messages",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "contacts[0].wa_id",
+        "options": {}
+      },
+      "id": "b6117912-f72a-420c-9088-1443dfbd8bdf",
+      "name": "Split Message",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        -1424,
+        416
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.type == 'audio' && Boolean($json.audio) }}",
+                    "rightValue": "audio",
+                    "id": "2d034b1a-34fc-46ce-81a1-eef51943a8a0"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio Message"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Text Message"
+        }
+      },
+      "id": "5ad44f38-fc8f-408e-91c2-e217423b8c05",
+      "name": "Message Types",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -1232,
+        416
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        640
+      ],
+      "id": "45a2b26f-3d73-44e2-8e75-c60fbf2be8ab",
+      "name": "GPT 4.1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "je52s6tWpD19QpBs",
+          "name": "OpenRouter - n8n Lab"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "72kIWE0EUzY1dybt",
+          "mode": "list",
+          "cachedResultName": "userChatMemory",
+          "cachedResultUrl": "/projects/taJEVBdSTkzLNErf/datatables/72kIWE0EUzY1dybt"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sender": "={{ $json.sender }}",
+            "recipient": "={{ $json.recipient }}",
+            "created_at": "={{ $now }}",
+            "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('message', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recipient",
+              "displayName": "recipient",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTableTool",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        640
+      ],
+      "id": "9be0943d-dbbc-46f2-88e9-6ab3d32d0042",
+      "name": "Save Message"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "72kIWE0EUzY1dybt",
+          "mode": "list",
+          "cachedResultName": "userChatMemory",
+          "cachedResultUrl": "/projects/taJEVBdSTkzLNErf/datatables/72kIWE0EUzY1dybt"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "sender",
+              "keyValue": "={{ $json.messages.from }}"
+            }
+          ]
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -1024,
+        432
+      ],
+      "id": "78dbc7ab-b8f3-48ad-b74e-2bc3383cb8cb",
+      "name": "Chat Memory",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d990cbd6-a408-4ec4-a889-41be698918d9",
+              "name": "message_type",
+              "type": "string",
+              "value": "={{ $('Message Types').first().json.messages.type }}"
+            },
+            {
+              "id": "23b785c3-f38e-4706-80b7-51f333bba3bd",
+              "name": "message_text",
+              "type": "string",
+              "value": "={{ $('Message Types').first().json.messages.text.body }}"
+            },
+            {
+              "id": "6e83f9a7-cf75-4182-b2d2-3151e8af76b9",
+              "name": "sender",
+              "type": "string",
+              "value": "={{ $('Message Types').first().json.messages.from }}"
+            },
+            {
+              "id": "1b335fc9-a102-428d-99e0-5e0529ad908e",
+              "name": "recipient",
+              "value": "={{ $('Message Types').first().json[\"contacts[0].wa_id\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "69994891-0a04-4156-8dca-fda717bb4bfe",
+              "name": "chat_memory",
+              "value": "={{ $json[\"Chat Memory\"]?.length ? $json[\"Chat Memory\"] : null }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "71cbce3c-7f97-4f68-9acc-81b5605074b7",
+      "name": "User's Message",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -608,
+        432
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('User\\'s Message').item.json.message_text }}",
+        "options": {
+          "systemMessage": "=# ROLE\nYou are a friendly AI assistant.\nYou are currently chatting with a user on WhatsApp.\n\n# RULES\n\n\nWhen the user sends a new message, check if they shared any **important information** that should be **saved in memory** for later.\n\nIf yes, use the Save Memory tool to save it.\nDo NOT tell the user that you are saving anything.\n\nJust keep the conversation going as usual.\n\n\n\n# Tools\n\nUse this tool to **store any important facts** shared by the user.\nSummarize the information clearly and pass it to this tool. \n\n# Memories\n\nThese are the **last saved facts** from the user (with date and time):\n{{ $json.chat_memory }}\n\n\n!! IMPORTANT !!\nUse this stored info when replying.\nIf something is already saved, don’t ask for it again.\n\nKeep your responses natural and friendly."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -416,
+        432
+      ],
+      "id": "68bf7a91-6195-482f-84bd-29819de3cb6e",
+      "name": "AI Assistant"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "Chat Memory",
+        "include": "specifiedFields",
+        "fieldsToInclude": "message, created_at",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -816,
+        432
+      ],
+      "id": "fef49814-6111-40aa-a527-6222ca3204c2",
+      "name": "Prepare Chat Memory",
+      "alwaysOutputData": false
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "User Message": {
+      "main": [
+        [
+          {
+            "node": "Split Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Message": {
+      "main": [
+        [
+          {
+            "node": "Message Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Types": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Chat Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GPT 4.1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Message": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Memory": {
+      "main": [
+        [
+          {
+            "node": "Prepare Chat Memory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User's Message": {
+      "main": [
+        [
+          {
+            "node": "AI Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Assistant": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Chat Memory": {
+      "main": [
+        [
+          {
+            "node": "User's Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "1232e70f-d0e2-456d-bbbf-2c2968467c29",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "gdta7iTx21kHoXrD",
+  "tags": []
+}
