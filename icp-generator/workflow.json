@@ -1,0 +1,784 @@
+{
+  "name": "ICP Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## ICP Generator\nAutomatically researches a company using its website and LinkedIn profile, analyzes the gathered information with AI, and generates a structured Ideal Customer Profile (ICP) analysis.",
+        "height": 656,
+        "width": 1360,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -304,
+        -144
+      ],
+      "typeVersion": 1,
+      "id": "550a7037-d682-4a73-8831-59b4dc7e52fd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=## Inputs\n- ** Company Name** (required):{{ $('Get Company').item.json.fields['Company Name'] }}\n- ** Company URL** (required):{{ $('Get Company').item.json.fields['Website URL'] }}\n- ** Company LinkedIn URL** (required):{{ $('Get Company').item.json.fields['Company Linkedin'] }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=## Role\nYou are an expert Business Intelligence Analyst specializing in\ncreating comprehensive Ideal Customer Profile (ICP) analyses.\nYour purpose is to research and analyze companies to develop\ndetailed customer personas, pain points, and market positioning\ninsights for strategic business development.\n\n## Must research\n- Must research all three provided inputs (company name, URL,\nLinkedIn URL) thoroughly\n- Generate specific, actionable ICP insights rather than\ngeneric business descriptions\n- Focus on B2B customer characteristics and pain points\n- Ensure all sections are completed with detailed, research-\nbacked information\n- Maintain professional business analysis tone throughout\n- Base conclusions on actual company data found through\nresearch\n- If insufficient data is found, clearly indicate limitations\nand provide best estimates\n- Do not make assumptions about company operations without\nsupporting evidence\n\n## Inputs\n**Company Name** (required): The name of the target company\nto analyze\n**Company URL** (required): Primary website URL for the\ncompany\n**Company LinkedIn URL** (required): LinkedIn company page URL\n\n## Tools\n1. Perplexity - Searches the web using perplexity with\nparameters:\n   - searchTerm (required - query for researching company\ninformation)\n\n## Instructions\n\n### Research Phase:\n1. Search for comprehensive company information using the Perplexity tool by passing in a\ncompany name and URL using the Perplexity tool\n2. Analyze the companys website to understand their products,\nservices, and target market\n3. Research the company's LinkedIn presence for additional\nbusiness insights\n4. Gather information about company size, industry, and\nbusiness model\n5. Identify key stakeholders and decision-makers from available\nsources\n\n### Analysis Phase:\n1. Synthesize research findings to create detailed ICP\ncomponents\n2. Develop specific product/service descriptions based on\nactual offerings\n3. Identify target customer segments based on company\npositioning\n4. Analyze market challenges the company's customers likely face\n5. Determine customer objectives and current solution approaches\n\n## Expected Outputs\n\n**Product Description**\n- Detailed explanation of the company's core product or service\noffering\n- Key features and benefits that differentiate the\nsolution\n- Implementation approach and delivery method\n- Target use cases and applications\n\n**Who are the ICP?**\n- Specific business characteristics (size, revenue, industry)\n- Geographic and operational considerations\n- Key decision-maker roles and demographics\n- Organizational structure and team composition\n\n**Pain Points / Challenges**\n- Primary operational challenges faced by target customers\n- Technical or process limitations in current state\n- Resource constraints and capability gaps\n- Market or competitive pressures affecting the business\n\n**Key Goals / Objectives**\n- Strategic business objectives driving purchasing decisions\n- Operational improvements sought by target customers\n- Performance metrics and success criteria\n- Growth and scaling aspirations\n\n**How do they currently solve their problems?**\n- Existing tools, systems, and processes in use\n- Workarounds and manual solutions currently employed\n- Vendor relationships and technology stack\n- Budget allocation and resource deployment patterns\n\n## Solutions (Error Handling)\n- If company information is limited or unclear, indicate data\nlimitations and provide analysis based on available information\n- If the company URL is inaccessible, focus research on company\nname and LinkedIn data\n- If LinkedIn URL provides minimal information, supplement with\nadditional web searches\n- If the company operates in an unfamiliar industry, research\nindustry standards and common practices\n- If conflicting information is found across sources,\nprioritize the most recent and authoritative data\n- If the company appears to serve multiple market segments,\nidentify the primary ICP and secondary segments"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        464,
+        128
+      ],
+      "id": "7cd7d8de-2596-42de-bd46-b1a987488146",
+      "name": "ICP Research"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Research the target company and provide detailed, source-backed information about its products, services, customers, market, business model, company size, decision-makers, pain points, goals, and current solutions.",
+        "resource": "agent",
+        "input": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Input', ``, 'string') }}",
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "preset": "medium",
+        "simplify": true,
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.perplexityTool",
+      "typeVersion": 2,
+      "position": [
+        544,
+        320
+      ],
+      "id": "354df962-3692-4ff4-8fa3-1175f335a630",
+      "name": "Perplexity",
+      "credentials": {
+        "perplexityApi": {
+          "id": "uk5rocwL3mUI4snz",
+          "name": "Perplexity account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"product_description\": {\n      \"type\": \"string\"\n    },\n    \"ideal_customer_profile\": {\n      \"type\": \"string\"\n    },\n    \"pain_points_challenges\": {\n      \"type\": \"string\"\n    },\n    \"key_goals_objectives\": {\n      \"type\": \"string\"\n    },\n    \"current_solutions\": {\n      \"type\": \"string\"\n    }\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        320
+      ],
+      "id": "8fc85a1a-3337-4fb0-b5a0-c89da4af5fe6",
+      "name": "Output Parser"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d03eaeef-486e-48f7-b1a0-19401811a23b",
+              "leftValue": "={{ $json.fields.Status }}",
+              "rightValue": "Incomplete",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        144
+      ],
+      "id": "a3fd51bc-0d24-4090-99d4-eb515468b2c3",
+      "name": "Check Research Status"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblt46ELxaHJw0WYm",
+          "mode": "list",
+          "cachedResultName": "Company",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblt46ELxaHJw0WYm"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Company').item.json.id }}",
+            "Status": "Processing"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Website URL",
+              "displayName": "Website URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company Linkedin",
+              "displayName": "Company Linkedin",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Generate Info",
+              "displayName": "Generate Info",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Product Description",
+              "displayName": "Product Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Who are the ICP?",
+              "displayName": "Who are the ICP?",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Pain Points",
+              "displayName": "Pain Points",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Key Goals",
+              "displayName": "Key Goals",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Currently Solving Problems",
+              "displayName": "Currently Solving Problems",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Completed",
+                  "value": "Completed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Competitors",
+              "displayName": "Competitors",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Keywords",
+              "displayName": "Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Blog Input",
+              "displayName": "Blog Input",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Blog Content",
+              "displayName": "Blog Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Blog Input 2",
+              "displayName": "Blog Input 2",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        -32
+      ],
+      "id": "5d797320-1534-4651-b255-39f7548c8b9e",
+      "name": "Mark Research In Progress",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblt46ELxaHJw0WYm",
+          "mode": "list",
+          "cachedResultName": "Company",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblt46ELxaHJw0WYm"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Company').item.json.id }}",
+            "Status": "Completed",
+            "Product Description": "={{ $json.output.product_description }}",
+            "Who are the ICP?": "={{ $json.output.ideal_customer_profile }}",
+            "Pain Points": "={{ $json.output.pain_points_challenges }}",
+            "Key Goals": "={{ $json.output.key_goals_objectives }}",
+            "Currently Solving Problems": "={{ $json.output.current_solutions }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Website URL",
+              "displayName": "Website URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company Linkedin",
+              "displayName": "Company Linkedin",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Generate Info",
+              "displayName": "Generate Info",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Product Description",
+              "displayName": "Product Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Who are the ICP?",
+              "displayName": "Who are the ICP?",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pain Points",
+              "displayName": "Pain Points",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Key Goals",
+              "displayName": "Key Goals",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Currently Solving Problems",
+              "displayName": "Currently Solving Problems",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Completed",
+                  "value": "Completed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Competitors",
+              "displayName": "Competitors",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Keywords",
+              "displayName": "Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Blog Input",
+              "displayName": "Blog Input",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Blog Content",
+              "displayName": "Blog Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Blog Input 2",
+              "displayName": "Blog Input 2",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        128
+      ],
+      "id": "fa979cfb-f560-4e82-9fd3-8f90b3435792",
+      "name": "Update ICP Record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "generate-icp",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        144
+      ],
+      "id": "219723c9-b86d-4596-bf4e-bdc1118282e5",
+      "name": "Receive Company",
+      "webhookId": "93b6daeb-3eb5-4a12-95f7-ad37e6ff7e6e",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "PYG91g2OH8ROXVzA",
+          "name": "Airtable Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblt46ELxaHJw0WYm",
+          "mode": "list",
+          "cachedResultName": "Company",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblt46ELxaHJw0WYm"
+        },
+        "id": "={{ $json.query.record_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        144
+      ],
+      "id": "28cb52ee-a398-4ded-9fd4-63582dbe24a8",
+      "name": "Get Company",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        400,
+        320
+      ],
+      "id": "6836928c-061d-41a3-82f0-db2136184f16",
+      "name": "gemini-2.5-pro",
+      "credentials": {
+        "openRouterApi": {
+          "id": "je52s6tWpD19QpBs",
+          "name": "OpenRouter - n8n Lab"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "ICP Research": {
+      "main": [
+        [
+          {
+            "node": "Update ICP Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity": {
+      "ai_tool": [
+        [
+          {
+            "node": "ICP Research",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "ICP Research",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Research Status": {
+      "main": [
+        [
+          {
+            "node": "ICP Research",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark Research In Progress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Receive Company": {
+      "main": [
+        [
+          {
+            "node": "Get Company",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Company": {
+      "main": [
+        [
+          {
+            "node": "Check Research Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gemini-2.5-pro": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ICP Research",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "dff49bdd-cac4-4986-a92f-032748dd137a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "01s554SWDxKmD4Fh",
+  "tags": [
+    {
+      "updatedAt": "2026-04-11T13:24:47.964Z",
+      "createdAt": "2026-04-11T13:24:47.964Z",
+      "id": "sOTzIRsqum6u0D9s",
+      "name": "SEO"
+    },
+    {
+      "updatedAt": "2026-04-11T13:24:44.670Z",
+      "createdAt": "2026-04-11T13:24:44.670Z",
+      "id": "fK81mlo1cutpizFR",
+      "name": "Blog"
+    }
+  ]
+}
