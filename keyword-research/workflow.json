@@ -1,0 +1,894 @@
+{
+  "name": "Keyword Research",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Keyword Research\nAutomatically researches a competitor URL to identify relevant seed keywords and stores the results for further SEO analysis.",
+        "height": 592,
+        "width": 1776,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "25f056f8-13c7-400f-9581-5374304c5b62",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.yepapi.com/v1/seo/domain/keywords",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "domain",
+              "value": "={{ $json.url }}"
+            },
+            {
+              "name": "limit",
+              "value": "={{ 10 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        784,
+        272
+      ],
+      "id": "d842e1b1-fd17-489b-b90b-8cceb15d6e71",
+      "name": "Get Keywords",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ymqu0SHOtXAmww5H",
+          "name": "YepAPI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "074db8d9-6129-4b9a-abec-f22cda48d7df",
+              "name": "url",
+              "value": "={{ $json.fields.URL }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        592,
+        272
+      ],
+      "id": "c4cb0892-a71f-4f64-840b-979251c56b1a",
+      "name": "Set URL"
+    },
+    {
+      "parameters": {
+        "path": "get-keywords",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -64,
+        288
+      ],
+      "id": "3609cce6-41c4-4657-80f3-13e8b55ac4ac",
+      "name": "Receive URL",
+      "webhookId": "93b6daeb-3eb5-4a12-95f7-ad37e6ff7e6e",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "PYG91g2OH8ROXVzA",
+          "name": "Airtable Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbli0DFM1SKZiyWbD",
+          "mode": "list",
+          "cachedResultName": "Competitors",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tbli0DFM1SKZiyWbD"
+        },
+        "id": "={{ $json.query.record_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        288
+      ],
+      "id": "23bbd599-4faf-47cf-81a4-3345f042f6e6",
+      "name": "Get Competitor Record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.keywords",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        992,
+        272
+      ],
+      "id": "3d271861-075e-4d57-bf4d-884186610109",
+      "name": "Extract Seed Keywords"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDi7DzsxcfgV20B",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblDi7DzsxcfgV20B"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Seed Keyword": "={{ $json.keyword }}",
+            "Date": "={{ $now }}",
+            "Volume": "={{ $json.volume }}",
+            "CPC": "={{ $json.cpc }}",
+            "Trafic": "={{ $json.traffic }}",
+            "Position": "={{ $json.position }}",
+            "Company": "={{ $('Get Competitor Record').item.json.fields['Competitor of'][0] }}",
+            "URL": "={{ $('Get Competitor Record').item.json.id }}",
+            "Longtail Status": "Incomplete"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "Seed Keyword",
+              "displayName": "Seed Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Keyword",
+              "displayName": "Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Trafic",
+              "displayName": "Trafic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Competition",
+              "displayName": "Competition",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Volume",
+              "displayName": "Volume",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "CPC",
+              "displayName": "CPC",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "KW Difficulty",
+              "displayName": "KW Difficulty",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Get Longtail Keyword",
+              "displayName": "Get Longtail Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Longtail Status",
+              "displayName": "Longtail Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Get Subtopics",
+              "displayName": "Get Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Subtopics Status",
+              "displayName": "Subtopics Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Subtopics",
+              "displayName": "Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Selected Subtopic (Optional)",
+              "displayName": "Selected Subtopic (Optional)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Content Style",
+              "displayName": "Content Style",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Listicle",
+                  "value": "Listicle"
+                },
+                {
+                  "name": "Informative",
+                  "value": "Informative"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Generate Article",
+              "displayName": "Generate Article",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Article Status",
+              "displayName": "Article Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Blog Content",
+              "displayName": "Blog Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        272
+      ],
+      "id": "ac4a66cb-f76d-4379-8f60-86d1e653ed74",
+      "name": "Store Seed Keywords",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbli0DFM1SKZiyWbD",
+          "mode": "list",
+          "cachedResultName": "Competitors",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tbli0DFM1SKZiyWbD"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Competitor Record').item.json.id }}",
+            "Keyword Status": "Complete"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Competitor of",
+              "displayName": "Competitor of",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Get Keywords",
+              "displayName": "Get Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Keyword Status",
+              "displayName": "Keyword Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Keywords",
+              "displayName": "Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1424,
+        272
+      ],
+      "id": "81b38b52-5ade-4590-9421-648192eaf249",
+      "name": "Update Seed Keyword Status",
+      "executeOnce": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbli0DFM1SKZiyWbD",
+          "mode": "list",
+          "cachedResultName": "Competitors",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tbli0DFM1SKZiyWbD"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Competitor Record').item.json.id }}",
+            "Keyword Status": "Processing"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Competitor of",
+              "displayName": "Competitor of",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Get Keywords",
+              "displayName": "Get Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Keyword Status",
+              "displayName": "Keyword Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        352,
+        112
+      ],
+      "id": "a58904de-b558-479f-842d-6fbfbf72b7a2",
+      "name": "Mark Seed Keyword In Progress",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d03eaeef-486e-48f7-b1a0-19401811a23b",
+              "leftValue": "={{ $json.fields['Keyword Status'] }}",
+              "rightValue": "Incomplete",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        352,
+        288
+      ],
+      "id": "db558001-6f0d-4ac8-9bfb-3253f1724234",
+      "name": "Check Seed Keyword Status"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Keywords": {
+      "main": [
+        [
+          {
+            "node": "Extract Seed Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set URL": {
+      "main": [
+        [
+          {
+            "node": "Get Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Receive URL": {
+      "main": [
+        [
+          {
+            "node": "Get Competitor Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Competitor Record": {
+      "main": [
+        [
+          {
+            "node": "Check Seed Keyword Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Seed Keywords": {
+      "main": [
+        [
+          {
+            "node": "Store Seed Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Seed Keywords": {
+      "main": [
+        [
+          {
+            "node": "Update Seed Keyword Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Seed Keyword Status": {
+      "main": [
+        [
+          {
+            "node": "Mark Seed Keyword In Progress",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6cb4808d-8f2d-416e-98cd-119fb97c7332",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "HOo4RIy84Ivdxvii",
+  "tags": [
+    {
+      "updatedAt": "2026-04-11T13:24:47.964Z",
+      "createdAt": "2026-04-11T13:24:47.964Z",
+      "id": "sOTzIRsqum6u0D9s",
+      "name": "SEO"
+    },
+    {
+      "updatedAt": "2026-04-11T13:24:44.670Z",
+      "createdAt": "2026-04-11T13:24:44.670Z",
+      "id": "fK81mlo1cutpizFR",
+      "name": "Blog"
+    }
+  ]
+}
