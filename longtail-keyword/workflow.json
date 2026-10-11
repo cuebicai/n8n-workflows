@@ -1,0 +1,1523 @@
+{
+  "name": "Longtail Keyword",
+  "nodes": [
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDi7DzsxcfgV20B",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblDi7DzsxcfgV20B"
+        },
+        "id": "={{ $json.query.record_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        304
+      ],
+      "id": "a51d86c4-604a-480e-82b3-8b970221e4f8",
+      "name": "Get Keyword Record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d03eaeef-486e-48f7-b1a0-19401811a23b",
+              "leftValue": "={{ $json.fields['Longtail Status'] }}",
+              "rightValue": "Incomplete",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        304
+      ],
+      "id": "40a9b82e-99ac-4d2c-8688-fc09bd3cb420",
+      "name": "Check Longtail Status"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDi7DzsxcfgV20B",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblDi7DzsxcfgV20B"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "Longtail Status": "Processing"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Seed Keyword",
+              "displayName": "Seed Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Keyword",
+              "displayName": "Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Competition",
+              "displayName": "Competition",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Volume",
+              "displayName": "Volume",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "CPC",
+              "displayName": "CPC",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Trafic",
+              "displayName": "Trafic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "KW Difficulty",
+              "displayName": "KW Difficulty",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Get Longtail Keyword",
+              "displayName": "Get Longtail Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Longtail Status",
+              "displayName": "Longtail Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        80,
+        128
+      ],
+      "id": "50b7d5ad-14a6-4291-83f8-3d36de836485",
+      "name": "Mark Longtail In Progress",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Longtail Keyword\nAutomatically expands a seed keyword into relevant long-tail keywords, related queries, and autocomplete suggestions for deeper SEO research",
+        "height": 880,
+        "width": 2208,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "d4232c63-ef11-4361-8b2e-66af297e5e78",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5acde0a9-5750-4d19-a579-3079ffc83702",
+              "name": "seed_kewword",
+              "value": "={{ $json.fields['Seed Keyword'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        320,
+        288
+      ],
+      "id": "4eff4bc6-6fda-4f5d-82a5-ac11a5a7df8a",
+      "name": "Set Set KW"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.yepapi.com/v1/seo/keywords/ideas",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "keyword",
+              "value": "={{ $json.seed_kewword }}"
+            },
+            {
+              "name": "limit",
+              "value": "={{ 10 }}"
+            },
+            {
+              "name": "location_code",
+              "value": "={{ 2840 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        288
+      ],
+      "id": "8fa64adc-7150-47f3-98d9-1ee476b21cb8",
+      "name": "Get Keyword Ideas",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ymqu0SHOtXAmww5H",
+          "name": "YepAPI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.yepapi.com/v1/seo/keywords/related",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "keyword",
+              "value": "={{ $json.seed_kewword }}"
+            },
+            {
+              "name": "limit",
+              "value": "={{ 10 }}"
+            },
+            {
+              "name": "location_code",
+              "value": "={{ 2840 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        96
+      ],
+      "id": "f831651f-7511-4d63-a6ee-b5df4166fbbc",
+      "name": "Get Related Keyword",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ymqu0SHOtXAmww5H",
+          "name": "YepAPI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "52cc37b5-b944-4b02-ad6f-9d09b6a63a29",
+              "name": "keyword",
+              "value": "={{ $json.keyword }}",
+              "type": "string"
+            },
+            {
+              "id": "efaa9fde-f8e0-4828-af9e-d730bf1bc75b",
+              "name": "competition",
+              "value": "={{ $json.competition }}",
+              "type": "string"
+            },
+            {
+              "id": "0b40d1e5-488d-4cef-b19a-908279147d93",
+              "name": "volume",
+              "value": "={{ $json.volume }}",
+              "type": "string"
+            },
+            {
+              "id": "4a305d2e-6c01-469b-8f0a-eb0b8c6ecb34",
+              "name": "cpc",
+              "value": "={{ $json.cpc }}",
+              "type": "string"
+            },
+            {
+              "id": "ef93988f-2f6a-47d8-ab0b-80c0c56eb207",
+              "name": "kw_difficulty",
+              "value": "={{ $json.competitionLevel }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        96
+      ],
+      "id": "0d924baf-4fc8-45af-bb23-d2eaa17a1a8a",
+      "name": "Set Related"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "52cc37b5-b944-4b02-ad6f-9d09b6a63a29",
+              "name": "keyword",
+              "value": "={{ $json.keyword }}",
+              "type": "string"
+            },
+            {
+              "id": "efaa9fde-f8e0-4828-af9e-d730bf1bc75b",
+              "name": "competition",
+              "value": "={{ $json.competition }}",
+              "type": "string"
+            },
+            {
+              "id": "0b40d1e5-488d-4cef-b19a-908279147d93",
+              "name": "volume",
+              "value": "={{ $json.volume }}",
+              "type": "string"
+            },
+            {
+              "id": "4a305d2e-6c01-469b-8f0a-eb0b8c6ecb34",
+              "name": "cpc",
+              "value": "={{ $json.cpc }}",
+              "type": "string"
+            },
+            {
+              "id": "ef93988f-2f6a-47d8-ab0b-80c0c56eb207",
+              "name": "kw_difficulty",
+              "value": "={{ $json.competitionLevel }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        288
+      ],
+      "id": "0ba016f4-b65f-460b-ab58-584c2f684407",
+      "name": "Set Ideas"
+    },
+    {
+      "parameters": {
+        "path": "get-longtail-keywords",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        304
+      ],
+      "id": "f4478816-3125-4387-929a-f80ecbf17b39",
+      "name": "Receive Seed Keyword",
+      "webhookId": "93b6daeb-3eb5-4a12-95f7-ad37e6ff7e6e",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "PYG91g2OH8ROXVzA",
+          "name": "Airtable Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.yepapi.com/v1/serp/google-autocomplete",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.seed_kewword }}"
+            },
+            {
+              "name": "depth",
+              "value": "={{ 10 }}"
+            },
+            {
+              "name": "location_code",
+              "value": "={{ 2840 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        480
+      ],
+      "id": "7bc115ef-f9fb-4e7f-921f-505670bb1c55",
+      "name": "Get Auto Complete",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ymqu0SHOtXAmww5H",
+          "name": "YepAPI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "data.suggestion"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        880,
+        480
+      ],
+      "id": "cbb5f476-a5a1-461e-b7d3-587ae37cf8d5",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.yepapi.com/v1/seo/keywords",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "keywords",
+              "value": "={{ $json.suggestion }}"
+            },
+            {
+              "name": "location_code",
+              "value": "={{ 2840 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        704
+      ],
+      "id": "8270dc3c-98b7-4d08-be3a-0c41773c0259",
+      "name": "Get Keyword Data",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ymqu0SHOtXAmww5H",
+          "name": "YepAPI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.keywords",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        688,
+        704
+      ],
+      "id": "aadd14ec-8955-49d7-a9c9-f7e1aea6d945",
+      "name": "Split Out3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "52cc37b5-b944-4b02-ad6f-9d09b6a63a29",
+              "name": "keyword",
+              "value": "={{ $json.keyword }}",
+              "type": "string"
+            },
+            {
+              "id": "efaa9fde-f8e0-4828-af9e-d730bf1bc75b",
+              "name": "competition",
+              "value": "={{ $json.competition }}",
+              "type": "string"
+            },
+            {
+              "id": "0b40d1e5-488d-4cef-b19a-908279147d93",
+              "name": "volume",
+              "value": "={{ $json.volume }}",
+              "type": "string"
+            },
+            {
+              "id": "4a305d2e-6c01-469b-8f0a-eb0b8c6ecb34",
+              "name": "cpc",
+              "value": "={{ $json.cpc }}",
+              "type": "string"
+            },
+            {
+              "id": "ef93988f-2f6a-47d8-ab0b-80c0c56eb207",
+              "name": "kw_difficulty",
+              "value": "={{ $json.competitionLevel }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        704
+      ],
+      "id": "9500516b-d3f5-4eea-a02e-64436b462282",
+      "name": "Set Keyword"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.keywords",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        688,
+        288
+      ],
+      "id": "ce0c74f5-c122-4c0c-ba9f-bc1170c9a40d",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.results",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        688,
+        480
+      ],
+      "id": "46273e19-ffcd-49ba-9093-42ec7d5920e5",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.keywords",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        688,
+        96
+      ],
+      "id": "b54395fb-fc97-48df-8038-b4ed7104cce5",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDi7DzsxcfgV20B",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblDi7DzsxcfgV20B"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Seed Keyword": "={{ $('Get Keyword Record').item.json.fields['Seed Keyword'] }}",
+            "Volume": "={{ $json.volume }}",
+            "CPC": "={{ $json.cpc }}",
+            "Company": "={{ $('Get Keyword Record').item.json.fields.Company[0] }}",
+            "URL": "={{ $('Get Keyword Record').item.json.fields.URL[0] }}",
+            "Keyword": "={{ $json.keyword }}",
+            "Competition": "={{ $json.competition }}",
+            "KW Difficulty": "={{ $json.kw_difficulty }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "Seed Keyword",
+              "displayName": "Seed Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Keyword",
+              "displayName": "Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Competition",
+              "displayName": "Competition",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Volume",
+              "displayName": "Volume",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "CPC",
+              "displayName": "CPC",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Trafic",
+              "displayName": "Trafic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "KW Difficulty",
+              "displayName": "KW Difficulty",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Get Longtail Keyword",
+              "displayName": "Get Longtail Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Longtail Status",
+              "displayName": "Longtail Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        288
+      ],
+      "id": "7a8a3096-08ae-4526-bd1a-410637e59f2b",
+      "name": "Store Longtail Keywords",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDi7DzsxcfgV20B",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblDi7DzsxcfgV20B"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Get Keyword Record').item.json.id }}",
+            "Longtail Status": "Complete"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true
+            },
+            {
+              "id": "Seed Keyword",
+              "displayName": "Seed Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Keyword",
+              "displayName": "Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Trafic",
+              "displayName": "Trafic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Competition",
+              "displayName": "Competition",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Volume",
+              "displayName": "Volume",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "CPC",
+              "displayName": "CPC",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "KW Difficulty",
+              "displayName": "KW Difficulty",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Get Longtail Keyword",
+              "displayName": "Get Longtail Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Longtail Status",
+              "displayName": "Longtail Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Get Subtopics",
+              "displayName": "Get Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Subtopics Status",
+              "displayName": "Subtopics Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Subtopics",
+              "displayName": "Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Selected Subtopic (Optional)",
+              "displayName": "Selected Subtopic (Optional)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Content Style",
+              "displayName": "Content Style",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Listicle",
+                  "value": "Listicle"
+                },
+                {
+                  "name": "Informative",
+                  "value": "Informative"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Generate Article",
+              "displayName": "Generate Article",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Article Status",
+              "displayName": "Article Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Blog Content",
+              "displayName": "Blog Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1504,
+        288
+      ],
+      "id": "d2f97a3b-c5f3-4a72-a11e-c4848dff9f28",
+      "name": "Update Longtail Keyword Status",
+      "executeOnce": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Keyword Record": {
+      "main": [
+        [
+          {
+            "node": "Check Longtail Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Longtail Status": {
+      "main": [
+        [
+          {
+            "node": "Mark Longtail In Progress",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set Set KW",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Set KW": {
+      "main": [
+        [
+          {
+            "node": "Get Related Keyword",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Keyword Ideas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Auto Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Keyword Ideas": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Related Keyword": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Related": {
+      "main": [
+        [
+          {
+            "node": "Store Longtail Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Ideas": {
+      "main": [
+        [
+          {
+            "node": "Store Longtail Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Receive Seed Keyword": {
+      "main": [
+        [
+          {
+            "node": "Get Keyword Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Auto Complete": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Get Keyword Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Keyword Data": {
+      "main": [
+        [
+          {
+            "node": "Split Out3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out3": {
+      "main": [
+        [
+          {
+            "node": "Set Keyword",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Keyword": {
+      "main": [
+        [
+          {
+            "node": "Store Longtail Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Set Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Set Related",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Longtail Keywords": {
+      "main": [
+        [
+          {
+            "node": "Update Longtail Keyword Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "278fe849-1d57-41e2-aa31-0ad89d5ef14d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "XmthoD6YCNm0hH5d",
+  "tags": [
+    {
+      "updatedAt": "2026-04-11T13:24:47.964Z",
+      "createdAt": "2026-04-11T13:24:47.964Z",
+      "id": "sOTzIRsqum6u0D9s",
+      "name": "SEO"
+    },
+    {
+      "updatedAt": "2026-04-11T13:24:44.670Z",
+      "createdAt": "2026-04-11T13:24:44.670Z",
+      "id": "fK81mlo1cutpizFR",
+      "name": "Blog"
+    }
+  ]
+}
