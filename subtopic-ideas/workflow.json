@@ -1,0 +1,837 @@
+{
+  "name": "Subtopic Ideas",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.yepapi.com/v1/serp/google",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.fields.Keyword }}"
+            },
+            {
+              "name": "limit",
+              "value": "={{ 10 }}"
+            },
+            {
+              "name": "location_code",
+              "value": "={{ 2840 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1120,
+        288
+      ],
+      "id": "348b4c6b-0404-4172-9fda-f940232c0881",
+      "name": "Get Subtopics",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ymqu0SHOtXAmww5H",
+          "name": "YepAPI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDi7DzsxcfgV20B",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblDi7DzsxcfgV20B"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "Subtopics Status": "Processing"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Seed Keyword",
+              "displayName": "Seed Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Keyword",
+              "displayName": "Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Trafic",
+              "displayName": "Trafic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Competition",
+              "displayName": "Competition",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Volume",
+              "displayName": "Volume",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "CPC",
+              "displayName": "CPC",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "KW Difficulty",
+              "displayName": "KW Difficulty",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Get Longtail Keyword",
+              "displayName": "Get Longtail Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Longtail Status",
+              "displayName": "Longtail Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Get Subtopics",
+              "displayName": "Get Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Subtopics Status",
+              "displayName": "Subtopics Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        848,
+        128
+      ],
+      "id": "ef3fccc6-3993-426a-aac5-8d6e65dd572f",
+      "name": "Mark ST In Progress",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ef93988f-2f6a-47d8-ab0b-80c0c56eb207",
+              "name": "subtopic",
+              "value": "={{ $json.sub_topic }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1520,
+        288
+      ],
+      "id": "f3c76bad-10c5-4034-8ab4-3c02c1c3c3c8",
+      "name": "Set Subtopic"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "subtopic"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1696,
+        288
+      ],
+      "id": "f326b9a5-d6f3-49ce-ba29-0ac1d49af3d6",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = $input.first().json.data.results;\n\nconst titles = [];\n\nfunction extractTitles(value) {\n  if (!value || typeof value !== 'object') return;\n\n  if (Array.isArray(value)) {\n    for (const item of value) {\n      extractTitles(item);\n    }\n    return;\n  }\n\n  // Ignore link elements completely\n  if (value.type === 'link_element') {\n    return;\n  }\n\n  // Only take titles with more than 3 words\n  if (typeof value.title === 'string' && value.title.trim()) {\n    const title = value.title.trim();\n    const wordCount = title.split(/\\s+/).length;\n\n    if (wordCount > 3) {\n      titles.push(title);\n    }\n  }\n\n  for (const key of Object.keys(value)) {\n    extractTitles(value[key]);\n  }\n}\n\nextractTitles(results);\n\n// Remove duplicates\nconst uniqueTitles = [...new Set(titles)];\n\nreturn uniqueTitles.map(title => ({\n  json: {\n    sub_topic: title\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1328,
+        288
+      ],
+      "id": "ba801f6d-065a-4e9f-8f30-ef7f356e9117",
+      "name": "extracts titles"
+    },
+    {
+      "parameters": {
+        "content": "## Subtopic Ideas\nAutomatically generates relevant subtopic ideas from a long-tail keyword using YepAPI, extracts subtopic titles, and stores the results in Airtable for content planning and SEO research.",
+        "height": 464,
+        "width": 1744,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        384,
+        48
+      ],
+      "typeVersion": 1,
+      "id": "2f6df408-cfa5-48f4-ac3d-54851438a8c8",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "path": "get-subtopics",
+        "authentication": "basicAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        432,
+        304
+      ],
+      "id": "137ba960-be87-4168-b9a5-16184a427fe9",
+      "name": "Receive Longtail Keyword",
+      "webhookId": "93b6daeb-3eb5-4a12-95f7-ad37e6ff7e6e",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "PYG91g2OH8ROXVzA",
+          "name": "Airtable Webhook Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDi7DzsxcfgV20B",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblDi7DzsxcfgV20B"
+        },
+        "id": "={{ $json.query.record_id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        304
+      ],
+      "id": "b770b663-0afe-4cb0-9f2d-da248d314ae6",
+      "name": "Get LT Keyword",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d03eaeef-486e-48f7-b1a0-19401811a23b",
+              "leftValue": "={{ $json.fields['Subtopics Status'] }}",
+              "rightValue": "Incomplete",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        848,
+        304
+      ],
+      "id": "fcd47356-0b3c-4922-a0a8-82ea6f3f5ac4",
+      "name": "Check LT Status"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appnPHwfLesOcBfqc",
+          "mode": "list",
+          "cachedResultName": "SEO Content Generation",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblDi7DzsxcfgV20B",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appnPHwfLesOcBfqc/tblDi7DzsxcfgV20B"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Subtopics Status": "Complete",
+            "Subtopics": "={{ $json.subtopic }}",
+            "id": "={{ $('Get LT Keyword').item.json.id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Seed Keyword",
+              "displayName": "Seed Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Keyword",
+              "displayName": "Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Trafic",
+              "displayName": "Trafic",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Position",
+              "displayName": "Position",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Competition",
+              "displayName": "Competition",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Volume",
+              "displayName": "Volume",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "CPC",
+              "displayName": "CPC",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "KW Difficulty",
+              "displayName": "KW Difficulty",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Get Longtail Keyword",
+              "displayName": "Get Longtail Keyword",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Longtail Status",
+              "displayName": "Longtail Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Get Subtopics",
+              "displayName": "Get Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Subtopics Status",
+              "displayName": "Subtopics Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Incomplete",
+                  "value": "Incomplete"
+                },
+                {
+                  "name": "Processing",
+                  "value": "Processing"
+                },
+                {
+                  "name": "Complete",
+                  "value": "Complete"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Subtopics",
+              "displayName": "Subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1888,
+        288
+      ],
+      "id": "c0b1785e-cc95-47eb-ad99-d6fbce5cd335",
+      "name": "Store ST",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Subtopics": {
+      "main": [
+        [
+          {
+            "node": "extracts titles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Subtopic": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Store ST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extracts titles": {
+      "main": [
+        [
+          {
+            "node": "Set Subtopic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Receive Longtail Keyword": {
+      "main": [
+        [
+          {
+            "node": "Get LT Keyword",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get LT Keyword": {
+      "main": [
+        [
+          {
+            "node": "Check LT Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check LT Status": {
+      "main": [
+        [
+          {
+            "node": "Mark ST In Progress",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Subtopics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ef36e8d8-3608-4914-9d26-b7a39a164cdd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "aXgRfEH0yCU8ozH5",
+  "tags": [
+    {
+      "updatedAt": "2026-04-11T13:24:44.670Z",
+      "createdAt": "2026-04-11T13:24:44.670Z",
+      "id": "fK81mlo1cutpizFR",
+      "name": "Blog"
+    },
+    {
+      "updatedAt": "2026-04-11T13:24:47.964Z",
+      "createdAt": "2026-04-11T13:24:47.964Z",
+      "id": "sOTzIRsqum6u0D9s",
+      "name": "SEO"
+    }
+  ]
+}
