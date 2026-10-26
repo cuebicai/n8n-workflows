@@ -1,0 +1,273 @@
+{
+  "name": "Blog Image Genration",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        864,
+        64
+      ],
+      "id": "bf32d3e9-31c7-4329-87c7-f3cd0b9788b8",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-type",
+              "value": "multipart/form-data"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "image",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4ec6b773-064e-4a94-b9bd-6abb0decbaaf",
+      "name": "Upload Img to ImgBB for URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1072,
+        64
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "AOdPyid4SHIEdEtk",
+          "name": "Query Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=http://api.resmush.it/ws.php?img={{ $json.data.url }}",
+        "options": {}
+      },
+      "id": "166780de-f85d-4e6b-af25-66891229e73a",
+      "name": "ReSmush.it Image Optimisation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1248,
+        64
+      ],
+      "notesInFlow": true,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "={{ $json.dest }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3132597f-860b-4c1a-abba-98edd1894a8f",
+      "name": "Store Optimised Image ImgBB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1424,
+        64
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "AOdPyid4SHIEdEtk",
+          "name": "Query Auth account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openRouterApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"google/gemini-2.5-flash-image\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"{{ $json.image_prompt }}\"\n        }\n      ]\n    }\n  ],\n  \"modalities\": [\"image\", \"text\"],\n  \"image_config\": {\n    \"aspect_ratio\": \"16:9\",\n    \"image_size\": \"1K\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        544,
+        64
+      ],
+      "id": "a0503643-ad88-4890-9a4a-6b1fd79d01ad",
+      "name": "NanoBanana",
+      "credentials": {
+        "openRouterApi": {
+          "id": "je52s6tWpD19QpBs",
+          "name": "OpenRouter - n8n Lab"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "124f3a7c-735d-4121-a407-b559dbccdbfe",
+              "name": "data",
+              "value": "={{ $json.choices[0].message.images[0].image_url.url.split(',')[1] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        64
+      ],
+      "id": "67e07de9-6e41-4685-ac60-cf590d003fa6",
+      "name": "ExtractBase64Str"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "image_prompt"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        64
+      ],
+      "id": "62a15705-ce0c-484f-ac54-d88b0a4fd860",
+      "name": "Image Generation Flow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Upload Img to ImgBB for URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Img to ImgBB for URL": {
+      "main": [
+        [
+          {
+            "node": "ReSmush.it Image Optimisation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ReSmush.it Image Optimisation": {
+      "main": [
+        [
+          {
+            "node": "Store Optimised Image ImgBB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NanoBanana": {
+      "main": [
+        [
+          {
+            "node": "ExtractBase64Str",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ExtractBase64Str": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Generation Flow": {
+      "main": [
+        [
+          {
+            "node": "NanoBanana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c690a495-9f65-4efd-8583-739fe511d98b",
+  "meta": {
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "Mhez1dizjyrF02lj",
+  "tags": []
+}
