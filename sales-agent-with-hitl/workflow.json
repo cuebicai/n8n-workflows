@@ -1,0 +1,1200 @@
+{
+  "name": "Sales Agent with HITL",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appM5S25t93K11hPG",
+          "mode": "list",
+          "cachedResultName": "Leads CRM",
+          "cachedResultUrl": "https://airtable.com/appM5S25t93K11hPG"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbljaA8r9fjyNwj2c",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/appM5S25t93K11hPG/tbljaA8r9fjyNwj2c"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "Status": "In Progress"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "AI Automations",
+                  "value": "AI Automations"
+                },
+                {
+                  "name": "AI Agent",
+                  "value": "AI Agent"
+                },
+                {
+                  "name": "Custom AI Solution",
+                  "value": "Custom AI Solution"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "TODO",
+                  "value": "TODO"
+                },
+                {
+                  "name": "In Progress",
+                  "value": "In Progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                },
+                {
+                  "name": "$5K - $10K",
+                  "value": "$5K - $10K"
+                },
+                {
+                  "name": "$0 - $5K",
+                  "value": "$0 - $5K"
+                },
+                {
+                  "name": "$10K Above",
+                  "value": "$10K Above"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Project Description",
+              "displayName": "Project Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Timeline",
+              "displayName": "Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Process",
+              "displayName": "Process",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "TODO",
+                  "value": "TODO"
+                },
+                {
+                  "name": "In Progress",
+                  "value": "In Progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        464,
+        192
+      ],
+      "id": "5dc601f0-e2d8-461c-aaf8-43ffc516752d",
+      "name": "Update Status: In Progress",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Income Lead\n\nName: {{ $('Store Lead').item.json.fields.Name }}\n\nEmail: {{ $('Store Lead').item.json.fields.Email }}\n\nCompanyName: {{ $('Store Lead').item.json.fields['Company Name'] }}\n\nIntent: {{ $('Store Lead').item.json.fields.Intent }}\n\nBudget: {{ $('Store Lead').item.json.fields.Budget }}\n\nProjectDescription: {{ $('Store Lead').item.json.fields['Project Description'] }}\n\nTimeline: {{ $('Store Lead').item.json.fields.Timeline }}\n\nCreated: {{ $('Store Lead').item.json.fields.Created }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Overview\nYou are an expert salesperson for an agency that delivers AI solutions. Your job is to respond to incoming leads by addressing their needs in a professional manner. You will receive information like the lead's project description and timeline, and your goal is to convince them that we are the best AI Agency on the market.\n\nTools\nProject Database – Use this tool to search through previous projects we have completed.\n\nRules\nYou will receive information about a lead, and you need to craft a concise, professional email.\n\nYour main objective is to convince the lead to book a second call. Make them believe that we can deliver their project and exceed expectations.\n\nRetrieve information about relevant past projects to include as proof of capability. Mention the client outcome or result we helped them achieve.\n\nInclude a link to book a call using this link: [REPLACE WITH YOUR BOOKING CALENDAR LINK]\n\nEmail Signature\nSign off emails as:\nArif, at Cuebic AI\n\nYou MUST return a valid JSON object containing exactly two properties:\n\n{\n\"subject\": \"Email subject line\",\n\"email\": \"Complete email body\"\n}\n\nOutput requirements:\n\nBoth properties must always be strings.\n\nBoth properties are required.\n\nDo not return null or empty values.\n\nDo not include additional properties.\n\nDo not include Markdown code fences.\n\nDo not include explanations, comments, or text outside the JSON object.\n\nEscape quotation marks and special characters correctly.\n\nPreserve email paragraph breaks using newline escape sequences where necessary.\n\nEnsure the output is valid JSON before responding.\n\nHere is the current date/time: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        688,
+        192
+      ],
+      "id": "84865816-a5bf-485f-a243-2e9075845996",
+      "name": "Sales Agent"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appM5S25t93K11hPG",
+          "mode": "list",
+          "cachedResultName": "Leads CRM",
+          "cachedResultUrl": "https://airtable.com/appM5S25t93K11hPG"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblMIy6zX74E0d5e4",
+          "mode": "list",
+          "cachedResultName": "Projects",
+          "cachedResultUrl": "https://airtable.com/appM5S25t93K11hPG/tblMIy6zX74E0d5e4"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.2,
+      "position": [
+        784,
+        400
+      ],
+      "id": "f57126ef-0d9c-4395-8126-858d5d15e306",
+      "name": "Project Database",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"The subject line of the email\"\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"description\": \"The body content of the email\"\n    }\n  },\n  \"required\": [\"subject\", \"email\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        928,
+        400
+      ],
+      "id": "45f80732-6736-411e-a185-1f7f885c466f",
+      "name": "Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "anarifnawaz4@gmail.com",
+        "subject": "=APPROVAL REQUIRED for New Lead {{ $('Store Lead').item.json.fields.Name }}",
+        "message": "={{ $('Store Lead').item.json.fields.Name }} from {{ $('Store Lead').item.json.fields['Company Name'] }} is looking for {{ $('Store Lead').item.json.fields.Intent }}. Their budget is {{ $('Store Lead').item.json.fields.Budget }} with a {{ $('Store Lead').item.json.fields.Timeline }} timeline\n\nPlease approve or decline the sending of this message generated by AI Sales Agent.\n\nSubject: {{ $json.email_subject }}\n\nbody: {{ $json.email_body }}",
+        "responseType": "freeText",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1264,
+        192
+      ],
+      "id": "76e0bc5b-8d5a-4b12-aeb3-3da8b1faf43c",
+      "name": "HITL - Wait for Response",
+      "webhookId": "ca301f65-7f71-4129-9956-9eb5fd01dea5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zrTugCtRtt5p8PXO",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b607b66c-8e2f-4446-8fd8-2a066f2a7ee8",
+              "name": "email_subject",
+              "value": "={{ $json.output.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "dbb776a4-cbc6-493e-8d62-ec79b83bdc76",
+              "name": "email_body",
+              "value": "={{ $json.output.email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1072,
+        192
+      ],
+      "id": "a487cc6a-0b34-4b84-8f0e-1f61649b71aa",
+      "name": "Draft Email"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-3.8-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        384
+      ],
+      "id": "4b42a41e-b960-4ed4-9b25-b3276fa0977b",
+      "name": "google/gemini-3.8-flash1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "je52s6tWpD19QpBs",
+          "name": "OpenRouter - n8n Lab"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.data.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Approved",
+              "description": "=The email has been reviewed and accepted as-is. The human explicitly or implicitly expresses approval, indicating that no changes are needed. \n\nExample phrases include:\n\n\"Looks good.\"\n\"Go ahead and send it.\"\n\"This works for me.\"\n\"Approved.\"\n\"No changes needed.\""
+            },
+            {
+              "category": "Declined",
+              "description": "=The email has been reviewed, but the human requests modifications before it is sent like tweaks, removing parts, rewording, etc. This could include suggested edits, rewording, or major revisions.   Example phrases include:  \"Can we tweak this part?\" \"Needs some changes.\" \"I’d like to reword this.\" \"Not quite right—let’s revise it.\" \"Can you adjust this before sending?\" \"Don't mention that we can't do that\""
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        1472,
+        192
+      ],
+      "id": "c84d1b85-5b3c-4c18-8ca7-9ea31f5a20df",
+      "name": "Check Feedback"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Email Body: {{ $('Draft Email').item.json.email_body }}\n\nFeedback from human: {{ $('HITL - Wait for Response').item.json.data.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Overview\nYou are an expert email writer. Your job is to take an incoming email and revise it based on the feedback the human submitted.\n\n## Rules\nSign off emails as Arif, at Cuebic AI\n\nYou MUST return a valid JSON object containing exactly two properties:\n\n{\n\"subject\": \"Email subject line\",\n\"email\": \"Complete email body\"\n}\n\nOutput requirements:\n\nBoth properties must always be strings.\n\nBoth properties are required.\n\nDo not return null or empty values.\n\nDo not include additional properties.\n\nDo not include Markdown code fences.\n\nDo not include explanations, comments, or text outside the JSON object.\n\nEscape quotation marks and special characters correctly.\n\nPreserve email paragraph breaks using newline escape sequences where necessary.\n\nEnsure the output is valid JSON before responding.\n\nHere is the current date/time: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1872,
+        208
+      ],
+      "id": "98ffd58f-606a-46b0-b02f-9b36c60de0b1",
+      "name": "Revision Agent"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"subject\": {\n      \"type\": \"string\",\n      \"description\": \"The subject line of the email\"\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"description\": \"The body content of the email\"\n    }\n  },\n  \"required\": [\"subject\", \"email\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2064,
+        416
+      ],
+      "id": "fc13ec6d-a836-4eb2-9dfc-1ba84bf5e63e",
+      "name": "Output Parser1"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        608,
+        400
+      ],
+      "id": "2563263b-52df-4dae-8ce5-f8a491a5b46e",
+      "name": "google/gemini-2.5-pro",
+      "credentials": {
+        "openRouterApi": {
+          "id": "je52s6tWpD19QpBs",
+          "name": "OpenRouter - n8n Lab"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        416
+      ],
+      "id": "f95b29ac-8ad7-4f90-b921-f1d279e69376",
+      "name": "google/gemini-2.5-pro1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "je52s6tWpD19QpBs",
+          "name": "OpenRouter - n8n Lab"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appM5S25t93K11hPG",
+          "mode": "list",
+          "cachedResultName": "Leads CRM",
+          "cachedResultUrl": "https://airtable.com/appM5S25t93K11hPG"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbljaA8r9fjyNwj2c",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/appM5S25t93K11hPG/tbljaA8r9fjyNwj2c"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Store Lead').item.json.id }}",
+            "Status": "Done"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "AI Automations",
+                  "value": "AI Automations"
+                },
+                {
+                  "name": "AI Agent",
+                  "value": "AI Agent"
+                },
+                {
+                  "name": "Custom AI Solution",
+                  "value": "Custom AI Solution"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "TODO",
+                  "value": "TODO"
+                },
+                {
+                  "name": "In Progress",
+                  "value": "In Progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                },
+                {
+                  "name": "$5K - $10K",
+                  "value": "$5K - $10K"
+                },
+                {
+                  "name": "$0 - $5K",
+                  "value": "$0 - $5K"
+                },
+                {
+                  "name": "$10K Above",
+                  "value": "$10K Above"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Project Description",
+              "displayName": "Project Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Timeline",
+              "displayName": "Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Process",
+              "displayName": "Process",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "TODO",
+                  "value": "TODO"
+                },
+                {
+                  "name": "In Progress",
+                  "value": "In Progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2064,
+        32
+      ],
+      "id": "a8089c1d-68c1-46c4-8edb-4ec3587d1dcb",
+      "name": "Update Status: Done",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Store Lead').item.json.fields.Email }}",
+        "subject": "={{ $('Draft Email').item.json.email_subject }}",
+        "emailType": "text",
+        "message": "={{ $('Draft Email').item.json.email_body.replace(/\\\\n/g, '\\n') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1872,
+        32
+      ],
+      "id": "b6a68738-700b-4559-9163-2402e3fb5587",
+      "name": "Send Email",
+      "webhookId": "543f46f9-2e62-40d7-8144-5792aba78bd7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zrTugCtRtt5p8PXO",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appM5S25t93K11hPG",
+          "mode": "list",
+          "cachedResultName": "Leads CRM",
+          "cachedResultUrl": "https://airtable.com/appM5S25t93K11hPG"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbljaA8r9fjyNwj2c",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://airtable.com/appM5S25t93K11hPG/tbljaA8r9fjyNwj2c"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Email": "={{ $json.Email }}",
+            "Company Name": "={{ $json['Company Name'] }}",
+            "Intent": "={{ $json['Select Intent'] }}",
+            "Budget": "={{ $json['Select Budget'] }}",
+            "Project Description": "={{ $json['Project Description'] }}",
+            "Timeline": "={{ $json.submittedAt.toDateTime().format('yyyy-MM-dd : HH, mm') }}",
+            "Status": "TODO"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "AI Automations",
+                  "value": "AI Automations"
+                },
+                {
+                  "name": "AI Agent",
+                  "value": "AI Agent"
+                },
+                {
+                  "name": "Custom AI Solution",
+                  "value": "Custom AI Solution"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "TODO",
+                  "value": "TODO"
+                },
+                {
+                  "name": "In Progress",
+                  "value": "In Progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                },
+                {
+                  "name": "$5K - $10K",
+                  "value": "$5K - $10K"
+                },
+                {
+                  "name": "$0 - $5K",
+                  "value": "$0 - $5K"
+                },
+                {
+                  "name": "$10K Above",
+                  "value": "$10K Above"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Project Description",
+              "displayName": "Project Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timeline",
+              "displayName": "Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Process",
+              "displayName": "Process",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "TODO",
+                  "value": "TODO"
+                },
+                {
+                  "name": "In Progress",
+                  "value": "In Progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created",
+              "displayName": "Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        192
+      ],
+      "id": "b35827d6-4c89-4dcd-8175-e2cd878142e6",
+      "name": "Store Lead",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Yiw51JHPddyAwrcA",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "AI Automation Project Inquiry",
+        "formDescription": "=Looking to automate your business with AI?\n\nTell me a little about your project, what you're trying to achieve, and your requirements. I'll review your submission and get back to you with a suitable solution and estimated cost.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "placeholder": "Enter your name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "placeholder": "Enter your email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company Name",
+              "placeholder": "Enter your company name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Select Intent",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "AI Automations"
+                  },
+                  {
+                    "option": "AI Agent"
+                  },
+                  {
+                    "option": "Custom AI Solution"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Select Budget",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "$0 - $5K"
+                  },
+                  {
+                    "option": "$5K - $10K"
+                  },
+                  {
+                    "option": "$10K Above"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Project Description",
+              "fieldType": "textarea",
+              "placeholder": "Describe your project",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Select Timeline",
+              "fieldType": "date",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        48,
+        192
+      ],
+      "id": "08fc686e-dfcd-472a-b011-acfcf536651f",
+      "name": "Lead Form",
+      "webhookId": "0af7b9a9-0e86-463a-820f-c3fa576a0e43"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Project Database": {
+      "ai_tool": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales Agent": {
+      "main": [
+        [
+          {
+            "node": "Draft Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft Email": {
+      "main": [
+        [
+          {
+            "node": "HITL - Wait for Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HITL - Wait for Response": {
+      "main": [
+        [
+          {
+            "node": "Check Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google/gemini-3.8-flash1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Check Feedback",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Feedback": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Revision Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Revision Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google/gemini-2.5-pro": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google/gemini-2.5-pro1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Revision Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Revision Agent": {
+      "main": [
+        [
+          {
+            "node": "Draft Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Update Status: Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Lead": {
+      "main": [
+        [
+          {
+            "node": "Update Status: In Progress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Form": {
+      "main": [
+        [
+          {
+            "node": "Store Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status: In Progress": {
+      "main": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ffa5ec3d-01b6-4a2d-a678-182942750fb5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "562cb5e9bd913399bc508d5cca3a022e266c94fafc0fc4830c790c2072378e42"
+  },
+  "nodeGroups": [],
+  "id": "d5B122YatumlrV5g",
+  "tags": []
+}
